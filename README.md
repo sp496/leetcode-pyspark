@@ -1,12 +1,14 @@
-## Title
+# Title
 
-### Postgres with Docker
+## Postgres with Docker
 
-#### Running Postgres with Docker
+### Running Postgres with Docker
 
 ```bash
+#Path to a data directory in the host machine
 export HOST_DATA_DIRECTORY="/home/saurabh/PycharmProjects/leetcode-pyspark/postgres_docker/data"
 
+#creating direcory for postgres data
 mkdir $HOST_DATA_DIRECTORY/postgres_data
 
 docker run -it \
@@ -23,9 +25,9 @@ docker run -it \
 
 If you want to reset your database, just delete the `postgres_data` folder
 
-#### Loading leetcode dump file using psql
+### Loading leetcode dump file using psql
 
-Installing `psql`
+Install `psql`
 ```bash
 sudo apt-get install -y postgresql-client
 ```
@@ -42,10 +44,8 @@ Quit
 
 Load data from dump file 
 ```bash
+#path to dump file
 export DUMP_FILE_PATH="/home/saurabh/PycharmProjects/leetcode-pyspark/postgresql_dump_file/leetcodedb.sql"
 
 pg_restore --host localhost --port 5432 --username postgres --dbname leetcodedb --verbose $DUMP_FILE_PATH
 ```
-
-
-
