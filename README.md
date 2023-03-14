@@ -18,7 +18,6 @@ docker run -it \
   -u $(id -u):$(id -g) \
   -v $HOST_DATA_DIRECTORY/postgres_data:/var/lib/postgresql/data \
   -p 5432:5432 \
-  --network=pg-network \
   --name pg-database \
   postgres:latest
 ```
