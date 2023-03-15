@@ -50,10 +50,12 @@ pg_restore --host localhost --port 5432 --username postgres --dbname leetcodedb 
 ```
 
 ### Running solutions
-
+You need a python interpreter with pyspark package installed ro run the solutions
+#### Running from PyCharm
+Just open the project root directory as a PyCharm project and you should be able to run the solutions
 
 #### Running from terminal
-Add your project directory path to the PYTHONPATH
+Append your project root directory path to the PYTHONPATH
 ```bash
 export PYTHONPATH=/home/saurabh/PycharmProjects/leetcode-pyspark:$PYTHONPATH
 ```
