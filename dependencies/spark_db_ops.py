@@ -7,7 +7,7 @@ class SparkDbOps:
 
     def __init__(self, config_file='config.ini'):
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(script_dir, 'config', config_file)
+        self.config_path = os.path.join(script_dir, '..', 'config', config_file)
         config = ConfigParser()
         config.read(self.config_path)
         self.database_name = config.get('database', 'name')

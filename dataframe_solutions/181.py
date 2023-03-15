@@ -1,7 +1,8 @@
+#https://www.jiakaobo.com/leetcode/181.%20Employees%20Earning%20More%20Than%20Their%20Managers.html
 from pyspark.sql.functions import col
-from spark_db_ops import SparkDbOps
+from dependencies import spark_db_ops
 
-so = SparkDbOps()
+so = spark_db_ops.SparkDbOps()
 
 employee_df = so.read_query_as_df("SELECT * FROM employee_181")
 result_df = employee_df.alias('emp')\

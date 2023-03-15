@@ -1,7 +1,8 @@
+#https://www.jiakaobo.com/leetcode/175.%20Combine%20Two%20Tables.html
 from pyspark.sql.functions import col
-from spark_db_ops import SparkDbOps
+from dependencies import spark_db_ops
 
-so = SparkDbOps()
+so = spark_db_ops.SparkDbOps()
 
 person_df = so.read_query_as_df("SELECT * FROM person_175")
 address_df = so.read_query_as_df("SELECT * FROM address_175")
