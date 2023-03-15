@@ -1,10 +1,10 @@
-#question-link
-from pyspark.sql.functions import col
-from spark_db_ops import SparkDbOps
+# question-link
+from dependencies import spark_db_ops
 
-so = SparkDbOps()
+so = spark_db_ops.SparkDbOps()
 
-#pyspark code
+# pyspark code
+
 df = so.read_query_as_df("SELECT * FROM table")
 df.show()
 
