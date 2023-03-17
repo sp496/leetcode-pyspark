@@ -18,7 +18,6 @@ docker run -it \
   -u $(id -u):$(id -g) \
   -v $HOST_DATA_DIRECTORY/postgres_data:/var/lib/postgresql/data \
   -p 5432:5432 \
-  --name pg-database \
   postgres:latest
 ```
 
@@ -50,6 +49,11 @@ pg_restore --host localhost --port 5432 --username postgres --dbname leetcodedb 
 ```
 
 ### Running solutions
+
+#### Download jar file for postgres jdbc driver
+
+#### Update `config.ini` in `config/config.ini` folder
+
 You need a python interpreter with pyspark package installed ro run the solutions
 #### Running from PyCharm
 Just open the project root directory as a PyCharm project and you should be able to run the solutions
@@ -70,3 +74,5 @@ Run python solution files
 ```bash
 python dataframe_solutions/181.py 
 ```
+
+
