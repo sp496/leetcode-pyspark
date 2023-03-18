@@ -1,14 +1,14 @@
-# question-link from https://www.jiakaobo.com/leetcode.html
+from dependencies import spark_pg_utils
 
-def main(spark):
+
+def main(spark_pg):
+    # Question link
+    # https://www.jiakaobo.com/leetcode.html
+
     # pyspark code
-    df = spark.read_table_as_df("employee_181")
+    df = spark_pg.read_table_as_df("employee_181")
     df.show()
 
 
 if __name__ == '__main__':
-    from dependencies import spark_db_ops
-
-    spark_session = spark_db_ops.SparkDbOps()
-    main(spark_session)
-    spark_session.stop()
+    spark_pg_utils.execute(main)

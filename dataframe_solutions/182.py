@@ -1,9 +1,14 @@
-# https://www.jiakaobo.com/leetcode/182.%20Duplicate%20Emails.html
+from dependencies import spark_pg_utils
 
-def main(spark):
+
+def main(spark_pg):
+    # Question link
+    # https://www.jiakaobo.com/leetcode/182.%20Duplicate%20Emails.html
+
+    # pyspark code
     from pyspark.sql.functions import col
 
-    person_df = spark.read_table_as_df("person_182")
+    person_df = spark_pg.read_table_as_df("person_182")
     result_df = person_df \
         .groupBy('email').count() \
         .filter(col('count') > 1) \
@@ -13,8 +18,5 @@ def main(spark):
 
 
 if __name__ == '__main__':
-    from dependencies import spark_db_ops
+    spark_pg_utils.execute(main)
 
-    spark_session = spark_db_ops.SparkDbOps()
-    main(spark_session)
-    spark_session.stop()
