@@ -17,43 +17,46 @@ class SparkDbOps:
         self.port = config.get('database', 'port')
         self.app_name = config.get("SparkConf", "app_name")
         self.jar_file_path = config.get("SparkConf", "jar_file_path")
-        self.url = f"jdbc:postgresql://{self.host}:{self.port}/{self.database_name}?user={self.user}" \
-                   f"&password={self.password}"
         self.spark = None
 
     def build_spark_session(self):
         if self.spark is None:
-            self.spark = SparkSession.builder\
-                .appName(self.app_name)\
-                .config("spark.driver.extraClassPath", self.jar_file_path)\
+            self.spark = SparkSession.builder \
+                .appName(self.app_name) \
+                .config("spark.driver.extraClassPath", self.jar_file_path) \
                 .getOrCreate()
 
     def get_spark_session(self):
         if self.spark is None:
-            self.spark = SparkSession.builder\
-                .appName(self.app_name)\
-                .config("spark.driver.extraClassPath", self.jar_file_path)\
+            self.spark = SparkSession.builder \
+                .appName(self.app_name) \
+                .config("spark.driver.extraClassPath", self.jar_file_path) \
                 .getOrCreate()
         return self.spark
 
     def read_query_as_df(self, query):
+        database_url = f"postgresql://{self.host}:{self.port}/{self.database_name}"
         self.build_spark_session()
         df = self.spark.read \
             .format("jdbc") \
-            .option("url", self.url) \
-            .option("query", query) \
             .option("driver", "org.postgresql.Driver") \
+            .option("url", f"jdbc:{database_url}") \
+            .option("user", self.user) \
+            .option("password", self.password) \
+            .option("query", query) \
             .load()
         return df
 
-    def get_table_as_df(self, table_name):
+    def read_table_as_df(self, table):
         database_url = f"postgresql://{self.host}:{self.port}/{self.database_name}"
+        self.build_spark_session()
         df = self.spark.read \
             .format("jdbc") \
+            .option("driver", "org.postgresql.Driver") \
             .option("url", f"jdbc:{database_url}") \
-            .option("dbtable", table_name) \
             .option("user", self.user) \
             .option("password", self.password) \
+            .option("dbtable", table) \
             .load()
         return df
 

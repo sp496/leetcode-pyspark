@@ -1,18 +1,20 @@
 # https://www.jiakaobo.com/leetcode/182.%20Duplicate%20Emails.html
-from dependencies import spark_db_ops
 
-so = spark_db_ops.SparkDbOps()
+def main(spark):
+    from pyspark.sql.functions import col
 
-# pyspark code
+    person_df = spark.read_table_as_df("person_182")
+    result_df = person_df \
+        .groupBy('email').count() \
+        .filter(col('count') > 1) \
+        .select(col('email'))
 
-from pyspark.sql.functions import col
+    result_df.show()
 
-person_df = so.read_query_as_df("SELECT * FROM person_182")
-result_df = person_df\
-    .groupBy('email').count()\
-    .filter(col('count') > 1)\
-    .select(col('email'))
 
-result_df.show()
+if __name__ == '__main__':
+    from dependencies import spark_db_ops
 
-so.stop()
+    spark_session = spark_db_ops.SparkDbOps()
+    main(spark_session)
+    spark_session.stop()
