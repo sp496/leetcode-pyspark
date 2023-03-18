@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 from configparser import ConfigParser
 
 
-class SparkDbOps:
+class SparkPgOps:
 
     def __init__(self, config_file='config.ini'):
         script_dir = os.path.dirname(os.path.abspath(__file__))
