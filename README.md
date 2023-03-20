@@ -40,7 +40,8 @@ Show tables
 Quit
 `\q`
 
-Load data from dump file 
+Load data from dump file
+(This needs to be done only once)
 ```bash
 #path to dump file
 export DUMP_FILE_PATH="/home/saurabh/PycharmProjects/leetcode-pyspark/postgresql_dump_file/leetcodedb.sql"
