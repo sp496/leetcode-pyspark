@@ -6,7 +6,7 @@ def main(spark_pg):
     # https://www.jiakaobo.com/leetcode.html
 
     # pyspark code
-    df = spark_pg.read_table_as_df("employee_181")
+    df = spark_pg.read_table_as_df("scores_178")
     df.show()
 
 
