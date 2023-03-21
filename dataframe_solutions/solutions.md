@@ -116,14 +116,63 @@ result_df = logs_df\
 result_df.show()
 ```
 
-### 
+### 184
 
 ```text
+Problem
+The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
 
++----+-------+--------+--------------+
+| Id | Name  | Salary | DepartmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 70000  | 1            |
+| 2  | Jim   | 90000  | 1            |
+| 3  | Henry | 80000  | 2            |
+| 4  | Sam   | 60000  | 2            |
+| 5  | Max   | 90000  | 1            |
++----+-------+--------+--------------+
+The Department table holds all departments of the company.
+
++----+----------+
+| Id | Name     |
++----+----------+
+| 1  | IT       |
+| 2  | Sales    |
++----+----------+
+Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).
+
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Max      | 90000  |
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
++------------+----------+--------+
+Explanation:
+
+Max and Jim both have the highest salary in the IT department and Henry has the highest salary in the Sales department.
 ```
 
 ```python
+from pyspark.sql.functions import col, desc, rank
+from pyspark.sql.window import Window
 
+emp_df = spark_pg.read_table_as_df("employee_184")
+emp_df.show()
+
+dep_df = spark_pg.read_table_as_df("department_184")
+dep_df.show()
+
+w = Window.partitionBy(col('dep.id')).orderBy(desc(col('emp.salary')))
+
+result_df = \
+    emp_df.alias('emp') \
+    .join(dep_df.alias('dep'), on=col('emp.department_id') == col('dep.id'), how='inner')\
+    .withColumn('rank', rank().over(w))\
+    .where(col('rank') == 1)\
+    .select([col('dep.name').alias('Department'), col('emp.name').alias('Employee'), 'salary'])
+
+result_df.show()
 ```
 
 
