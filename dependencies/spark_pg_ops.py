@@ -1,15 +1,9 @@
-import os
 from pyspark.sql import SparkSession
-from configparser import ConfigParser
 
 
 class SparkPgOps:
 
-    def __init__(self, config_file='config.ini'):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(script_dir, '..', 'config', config_file)
-        config = ConfigParser()
-        config.read(self.config_path)
+    def __init__(self, config):
         self.database_name = config.get('database', 'name')
         self.user = config.get('database', 'username')
         self.password = config.get('database', 'password')

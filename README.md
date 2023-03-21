@@ -20,8 +20,57 @@ docker run -it \
   -p 5432:5432 \
   postgres:latest
 ```
-
 If you want to reset your database, just delete the `postgres_data` folder
+
+
+#### Running Postgres with pgadmin (optional)
+
+Create a network
+
+```bash
+docker network create pg-network
+```
+
+```bash
+#Path to a data directory in the host machine
+export HOST_DATA_DIRECTORY="/home/saurabh/PycharmProjects/leetcode-pyspark/postgres_docker/data"
+
+#creating direcory for postgres data if it doesn't exist already
+mkdir -p $HOST_DATA_DIRECTORY/postgres_data
+
+docker run -it \
+  -e POSTGRES_USER="postgres" \
+  -e POSTGRES_PASSWORD="postgres" \
+  -e POSTGRES_DB="leetcodedb" \
+  -u $(id -u):$(id -g) \
+  -v $HOST_DATA_DIRECTORY/postgres_data:/var/lib/postgresql/data \
+  -p 5432:5432 \
+  --network=pg-network \
+  --name pg-database \
+  postgres:latest
+```
+
+Launching pgadmin (optional)
+
+```bash
+#Path to a data directory in the host machine
+export HOST_DATA_DIRECTORY="/home/saurabh/PycharmProjects/leetcode-pyspark/postgres_docker/data"
+
+#creating direcory for postgres data if it doesn't exist already
+mkdir -p $HOST_DATA_DIRECTORY/pgadmin_conn_data
+
+sudo chown -R 5050:5050 $HOST_DATA_DIRECTORY/pgadmin_conn_data
+
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  -v $HOST_DATA_DIRECTORY/pgadmin_conn_data:/var/lib/pgadmin \
+  --network=pg-network \
+  --name pgadmin \
+  dpage/pgadmin4
+```
+
 
 #### Loading leetcode dump file using psql
 
