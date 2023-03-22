@@ -297,6 +297,7 @@ act_df = spark_pg.read_table_as_df("activity_550")
 act_df.show()
 
 w = Window.partitionBy(col('a1.player_id')).orderBy('a1.event_date')
+
 result_df = act_df.alias('a1') \
     .withColumn('event_number', rank().over(w)) \
     .join(act_df.alias('a2'),
@@ -304,6 +305,8 @@ result_df = act_df.alias('a1') \
           how='left') \
     .select(round((count(when((col('event_number') == 1) & (col('a2.player_id').isNotNull()), col('a1.player_id'))
                          .otherwise(None)) / countDistinct(col("a1.player_id"))), 2).alias('fraction'))
+
+result_df.show()
 ```
 
 

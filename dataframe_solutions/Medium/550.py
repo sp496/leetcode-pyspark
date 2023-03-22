@@ -13,6 +13,7 @@ def main(spark_pg):
     act_df.show()
 
     w = Window.partitionBy(col('a1.player_id')).orderBy('a1.event_date')
+
     result_df = act_df.alias('a1') \
         .withColumn('event_number', rank().over(w)) \
         .join(act_df.alias('a2'),
