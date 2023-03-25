@@ -182,12 +182,6 @@ result_df.show()
 ```
 
 
-### test
-
-<div>
-<iframe src="https://github.com/sp496/leetcode-pyspark/blob/main/dataframe_solutions/Medium/578.py" frameborder="0" scrolling="no" width="100%" height="300px"></iframe>
-</div>
-
 ### 
 
 ```python
