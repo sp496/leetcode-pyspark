@@ -4,23 +4,7 @@
 
 ## Medium
 
-### 176. Second Highest Salary
-```text
-Write a SQL query to get the second highest salary from the Employee table.
-+----+--------+
-| Id | Salary |
-+----+--------+
-| 1  | 100    |
-| 2  | 200    |
-| 3  | 300    |
-+----+--------+
-For example, given the above Employee table, the query should return 200 as the second highest salary. If there is no second highest salary, then the query should return null.
-+---------------------+
-| SecondHighestSalary |
-+---------------------+
-| 200                 |
-+---------------------+
-```
+### [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
 
 ```python
 from pyspark.sql.window import Window
@@ -37,35 +21,8 @@ result_df = employee_df\
 result_df.show()
 ```
 
-### 178
+### [178. Rank Scores](https://www.jiakaobo.com/leetcode/178.%20Rank%20Scores.html)
 
-```text
-Write a SQL query to rank scores. If there is a tie between two scores, both should have the same ranking. Note that after a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no “holes” between ranks.
-
-+----+-------+
-| Id | Score |
-+----+-------+
-| 1  | 3.50  |
-| 2  | 3.65  |
-| 3  | 4.00  |
-| 4  | 3.85  |
-| 5  | 4.00  |
-| 6  | 3.65  |
-+----+-------+
-For example, given the above Scores table, your query should generate the following report (order by highest score):
-
-+-------+---------+
-| score | Rank    |
-+-------+---------+
-| 4.00  | 1       |
-| 4.00  | 1       |
-| 3.85  | 2       |
-| 3.65  | 3       |
-| 3.65  | 3       |
-| 3.50  | 4       |
-+-------+---------+
-Important Note: For MySQL solutions, to escape reserved words used as column names, you can use an apostrophe before and after the keyword. For example Rank.
-```
 ```python
 from pyspark.sql.functions import col, desc, dense_rank
 from pyspark.sql.window import Window
@@ -78,29 +35,7 @@ result_df = scores_df.\
 result_df.show()
 ```
 
-### 180
-```text
-Write a SQL query to find all numbers that appear at least three times consecutively.
-
-+----+-----+
-| Id | Num |
-+----+-----+
-| 1  |  1  |
-| 2  |  1  |
-| 3  |  1  |
-| 4  |  2  |
-| 5  |  1  |
-| 6  |  2  |
-| 7  |  2  |
-+----+-----+
-For example, given the above Logs table, 1 is the only number that appears consecutively for at least three times.
-
-+-----------------+
-| ConsecutiveNums |
-+-----------------+
-| 1               |
-+-----------------+
-```
+### [180. Consecutive Numbers](https://www.jiakaobo.com/leetcode/180.%20Consecutive%20Numbers.html)
 
 ```python
 from pyspark.sql.functions import col, asc, lead
@@ -120,42 +55,7 @@ result_df = logs_df\
 result_df.show()
 ```
 
-### 184
-
-```text
-Problem
-The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
-
-+----+-------+--------+--------------+
-| Id | Name  | Salary | DepartmentId |
-+----+-------+--------+--------------+
-| 1  | Joe   | 70000  | 1            |
-| 2  | Jim   | 90000  | 1            |
-| 3  | Henry | 80000  | 2            |
-| 4  | Sam   | 60000  | 2            |
-| 5  | Max   | 90000  | 1            |
-+----+-------+--------+--------------+
-The Department table holds all departments of the company.
-
-+----+----------+
-| Id | Name     |
-+----+----------+
-| 1  | IT       |
-| 2  | Sales    |
-+----+----------+
-Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).
-
-+------------+----------+--------+
-| Department | Employee | Salary |
-+------------+----------+--------+
-| IT         | Max      | 90000  |
-| IT         | Jim      | 90000  |
-| Sales      | Henry    | 80000  |
-+------------+----------+--------+
-Explanation:
-
-Max and Jim both have the highest salary in the IT department and Henry has the highest salary in the Sales department.
-```
+### [184. Department Highest Salary](https://www.jiakaobo.com/leetcode/184.%20Department%20Highest%20Salary.html)
 
 ```python
 from pyspark.sql.functions import col, desc, rank
@@ -181,56 +81,7 @@ result_df.show()
 
 
 
-### 534
-
-```text
-SQL Schema Table: Activity
-
-+--------------+---------+
-| Column Name  | Type    |
-+--------------+---------+
-| player_id    | int     |
-| device_id    | int     |
-| event_date   | date    |
-| games_played | int     |
-+--------------+---------+
-(player_id, event_date) is the primary key of this table.
-This table shows the activity of players of some games.
-Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
-Write an SQL query to report for each player and date, how many games played so far by the player. That is, the total number of games played by the player until that date. Check the example for clarity.
-
-Return the result table in any order.
-
-The query result format is in the following example.
-
-Example 1:
-
-Input: 
-Activity table:
-+-----------+-----------+------------+--------------+
-| player_id | device_id | event_date | games_played |
-+-----------+-----------+------------+--------------+
-| 1         | 2         | 2016-03-01 | 5            |
-| 1         | 2         | 2016-05-02 | 6            |
-| 1         | 3         | 2017-06-25 | 1            |
-| 3         | 1         | 2016-03-02 | 0            |
-| 3         | 4         | 2018-07-03 | 5            |
-+-----------+-----------+------------+--------------+
-Output: 
-+-----------+------------+---------------------+
-| player_id | event_date | games_played_so_far |
-+-----------+------------+---------------------+
-| 1         | 2016-03-01 | 5                   |
-| 1         | 2016-05-02 | 11                  |
-| 1         | 2017-06-25 | 12                  |
-| 3         | 2016-03-02 | 0                   |
-| 3         | 2018-07-03 | 5                   |
-+-----------+------------+---------------------+
-Explanation: 
-For the player with id 1, 5 + 6 = 11 games played by 2016-05-02, and 5 + 6 + 1 = 12 games played by 2017-06-25.
-For the player with id 3, 0 + 5 = 5 games played by 2018-07-03.
-Note that for each player we only care about the days when the player logged in.
-```
+### [534. Game Play Analysis III](https://www.jiakaobo.com/leetcode/534.%20Game%20Play%20Analysis%20III.html)
 
 ```python
 from pyspark.sql.functions import col, sum
@@ -249,49 +100,7 @@ result_df.show()
 ```
 
 
-### 550. Game Play Analysis IV
-
-```text
-Table: Activity
-
-+--------------+---------+
-| Column Name  | Type    |
-+--------------+---------+
-| player_id    | int     |
-| device_id    | int     |
-| event_date   | date    |
-| games_played | int     |
-+--------------+---------+
-(player_id, event_date) is the primary key of this table.
-This table shows the activity of players of some games.
-Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
- 
-Write an SQL query to report the fraction of players that logged in again on the day after the day they first logged in, rounded to 2 decimal places. In other words, you need to count the number of players that logged in for at least two consecutive days starting from their first login date, then divide that number by the total number of players.
-
-The query result format is in the following example.
-
-Example 1:
-
-Input: 
-Activity table:
-+-----------+-----------+------------+--------------+
-| player_id | device_id | event_date | games_played |
-+-----------+-----------+------------+--------------+
-| 1         | 2         | 2016-03-01 | 5            |
-| 1         | 2         | 2016-03-02 | 6            |
-| 2         | 3         | 2017-06-25 | 1            |
-| 3         | 1         | 2016-03-02 | 0            |
-| 3         | 4         | 2018-07-03 | 5            |
-+-----------+-----------+------------+--------------+
-Output: 
-+-----------+
-| fraction  |
-+-----------+
-| 0.33      |
-+-----------+
-Explanation: 
-Only the player with id 1 logged back in after the first day he had logged in so the answer is 1/3 = 0.33
-```
+### [550. Game Play Analysis IV](https://www.jiakaobo.com/leetcode/550.%20Game%20Play%20Analysis%20IV.html)
 
 ```python
 from pyspark.sql.functions import col, rank, when, count, countDistinct, round
@@ -314,52 +123,7 @@ result_df.show()
 ```
 
 
-### 570. Managers with at Least 5 Direct Reports
-
-```text
-Problem
-Table: Employee
-
-+-------------+---------+
-| Column Name | Type    |
-+-------------+---------+
-| id          | int     |
-| name        | varchar |
-| department  | varchar |
-| managerId   | int     |
-+-------------+---------+
-id is the primary key column for this table.
-Each row of this table indicates the name of an employee, their department, and the id of their manager.
-If managerId is null, then the employee does not have a manager.
-No employee will be the manager of themself.
- 
-Write an SQL query to report the managers with at least five direct reports.
-
-Return the result table in any order.
-
-The query result format is in the following example.
-
-Example 1:
-
-Input: 
-Employee table:
-+-----+-------+------------+-----------+
-| id  | name  | department | managerId |
-+-----+-------+------------+-----------+
-| 101 | John  | A          | None      |
-| 102 | Dan   | A          | 101       |
-| 103 | James | A          | 101       |
-| 104 | Amy   | A          | 101       |
-| 105 | Anne  | A          | 101       |
-| 106 | Ron   | B          | 101       |
-+-----+-------+------------+-----------+
-Output: 
-+------+
-| name |
-+------+
-| John |
-+------+
-```
+### [570. Managers with at Least 5 Direct Reports](https://www.jiakaobo.com/leetcode/570.%20Managers%20with%20at%20Least%205%20Direct%20Reports.html)
 
 ```python
 from pyspark.sql.functions import col, count
@@ -377,69 +141,7 @@ result_df.show()
 ```
 
 
-### 574. Winning Candidate
-
-```text
-Table: Candidate
-
-+-------------+----------+
-| Column Name | Type     |
-+-------------+----------+
-| id          | int      |
-| name        | varchar  |
-+-------------+----------+
-id is the primary key column for this table.
-Each row of this table contains information about the id and the name of a candidate.
-Table: Vote
-
-+-------------+------+
-| Column Name | Type |
-+-------------+------+
-| id          | int  |
-| candidateId | int  |
-+-------------+------+
-id is an auto-increment primary key.
-candidateId is a foreign key to id from the Candidate table.
-Each row of this table determines the candidate who got the ith vote in the elections.
-Write an SQL query to report the name of the winning candidate (i.e., the candidate who got the largest number of votes).
-
-The test cases are generated so that exactly one candidate wins the elections.
-
-The query result format is in the following example.
-
-Example 1:
-
-Input: 
-Candidate table:
-+----+------+
-| id | name |
-+----+------+
-| 1  | A    |
-| 2  | B    |
-| 3  | C    |
-| 4  | D    |
-| 5  | E    |
-+----+------+
-Vote table:
-+----+-------------+
-| id | candidateId |
-+----+-------------+
-| 1  | 2           |
-| 2  | 4           |
-| 3  | 3           |
-| 4  | 2           |
-| 5  | 5           |
-+----+-------------+
-Output: 
-+------+
-| name |
-+------+
-| B    |
-+------+
-Explanation: 
-Candidate B has 2 votes. Candidates C, D, and E have 1 vote each.
-The winner is candidate B.
-```
+### [574. Winning Candidate](https://www.jiakaobo.com/leetcode/574.%20Winning%20Candidate.html)
 
 ```python
 from pyspark.sql.functions import col, count
@@ -460,748 +162,1095 @@ result_df.show()
 ```
 
 
-### 
+### [578. Get Highest Answer Rate Question](https://www.jiakaobo.com/leetcode/578.%20Get%20Highest%20Answer%20Rate%20Question.html)
 
-```text
+```python
+from pyspark.sql.functions import col, count, when
 
-```
+df = spark_pg.read_table_as_df("surveylog_578")
+df.show()
 
-```python
+result_df = df\
+    .groupby('question_id')\
+    .agg((count(when(col('action') == 'answer', True))/
+          count(when(col('action') == 'show', True))).alias('answer_rate'))\
+    .orderBy('question_id') \
+    .limit(1)\
+    .select('question_id').alias('survey_log')
 
+result_df.show()
 ```
 
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
-
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
-
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
+
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
 
+### 
+
+```python
 
+```
+
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1209,9 +1258,11 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1219,9 +1270,11 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1229,52 +1282,77 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
 ```
+
+### 
+
+```python
 
+```
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1282,9 +1360,11 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1292,9 +1372,11 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
+
+### 
 
 ```python
 
@@ -1302,21 +1384,32 @@ result_df.show()
 
 ### 
 
-```text
+```python
 
 ```
 
+### 
+
 ```python
 
 ```
+
+### 
 
+```python
 
-## Hard
+```
 
+### 
 
+```python
 
+```
 
+### 
 
+```python
 
+```
 
 
