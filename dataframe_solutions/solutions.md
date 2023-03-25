@@ -373,14 +373,86 @@ result_df.show()
 ```
 
 
-### 
+### 574. Winning Candidate
 
 ```text
+Table: Candidate
 
++-------------+----------+
+| Column Name | Type     |
++-------------+----------+
+| id          | int      |
+| name        | varchar  |
++-------------+----------+
+id is the primary key column for this table.
+Each row of this table contains information about the id and the name of a candidate.
+Table: Vote
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| candidateId | int  |
++-------------+------+
+id is an auto-increment primary key.
+candidateId is a foreign key to id from the Candidate table.
+Each row of this table determines the candidate who got the ith vote in the elections.
+Write an SQL query to report the name of the winning candidate (i.e., the candidate who got the largest number of votes).
+
+The test cases are generated so that exactly one candidate wins the elections.
+
+The query result format is in the following example.
+
+Example 1:
+
+Input: 
+Candidate table:
++----+------+
+| id | name |
++----+------+
+| 1  | A    |
+| 2  | B    |
+| 3  | C    |
+| 4  | D    |
+| 5  | E    |
++----+------+
+Vote table:
++----+-------------+
+| id | candidateId |
++----+-------------+
+| 1  | 2           |
+| 2  | 4           |
+| 3  | 3           |
+| 4  | 2           |
+| 5  | 5           |
++----+-------------+
+Output: 
++------+
+| name |
++------+
+| B    |
++------+
+Explanation: 
+Candidate B has 2 votes. Candidates C, D, and E have 1 vote each.
+The winner is candidate B.
 ```
 
 ```python
+from pyspark.sql.functions import col, count
 
+can_df = spark_pg.read_table_as_df("candidate_574")
+can_df.show()
+vote_df = spark_pg.read_table_as_df("vote_574")
+vote_df.show()
+
+result_df = vote_df.alias('v')\
+    .join(can_df.alias('c'), on=col('v.candidate_id') == col('c.id'))\
+    .groupby([col('v.candidate_id'), col('c.name')]).agg(count('v.id').alias('votes'))\
+    .orderBy(col('votes').desc())\
+    .limit(1)\
+    .select(col('name'))
+
+result_df.show()
 ```
 
 
