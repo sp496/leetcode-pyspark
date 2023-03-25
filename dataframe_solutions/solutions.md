@@ -182,11 +182,9 @@ result_df.show()
 ```
 
 
-### 
+### test
 
-```python
-
-```
+[Click here to view the code in GitHub](https://github.com/sp496/leetcode-pyspark/blob/main/dataframe_solutions/Medium/578.py)
 
 ### 
 
