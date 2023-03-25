@@ -299,11 +299,11 @@ act_df.show()
 w = Window.partitionBy(col('a1.player_id')).orderBy('a1.event_date')
 
 result_df = act_df.alias('a1') \
-    .withColumn('event_number', rank().over(w)) \
+    .withColumn('day', rank().over(w)) \
     .join(act_df.alias('a2'),
           on=(col('a1.player_id') == col('a2.player_id')) & (col('a2.event_date') == col('a1.event_date') + 1),
           how='left') \
-    .select(round((count(when((col('event_number') == 1) & (col('a2.player_id').isNotNull()), col('a1.player_id'))
+    .select(round((count(when((col('day') == 1) & (col('a2.player_id').isNotNull()), col('a1.player_id'))
                          .otherwise(None)) / countDistinct(col("a1.player_id"))), 2).alias('fraction'))
 
 result_df.show()
