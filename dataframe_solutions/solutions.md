@@ -1,6 +1,10 @@
-## Solutions
+# Solutions
 
-### 176
+## Easy
+
+## Medium
+
+### 176. Second Highest Salary
 ```text
 Write a SQL query to get the second highest salary from the Employee table.
 +----+--------+
@@ -1305,6 +1309,9 @@ result_df.show()
 ```python
 
 ```
+
+
+## Hard
 
 
 

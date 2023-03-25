@@ -11,7 +11,6 @@ class SparkPgOps:
         self.port = config.get('database', 'port')
         self.app_name = config.get("SparkConf", "app_name")
         self.jar_file_path = config.get("SparkConf", "jar_file_path")
-        # self.spark = None
         self.spark = SparkSession.builder \
             .appName(self.app_name) \
             .config("spark.driver.extraClassPath", self.jar_file_path) \
