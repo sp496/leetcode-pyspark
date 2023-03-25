@@ -184,13 +184,7 @@ result_df.show()
 
 ### test
 
-```python
-import requests
-
-response = requests.get("https://github.com/sp496/leetcode-pyspark/blob/main/dataframe_solutions/Medium/578.py")
-print(response.text)
-```
-
+<script src="https://github.com/sp496/leetcode-pyspark/blob/main/dataframe_solutions/Medium/578.py"></script>
 
 ### 
 
