@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def main(spark_pg):
+def solution_1(spark_pg):
     # Question link
     # https://www.jiakaobo.com/leetcode/570.%20Managers%20with%20at%20Least%205%20Direct%20Reports.html
 
@@ -22,4 +22,4 @@ def main(spark_pg):
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(main)
+    spark_pg_utils.execute(solution_1)

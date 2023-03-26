@@ -202,10 +202,23 @@ result_df = dep_df\
 result_df.show()
 ```
 
-### 
+### [585. Investments in 2016](https://www.jiakaobo.com/leetcode/585.%20Investments%20in%202016.html)
 
 ```python
+from pyspark.sql.functions import col, sum
 
+inv_df = spark_pg.read_table_as_df("insurance_585")
+inv_df.show()
+
+result_df = inv_df.alias('i1') \
+    .join(inv_df.alias('i2'), on=(col('i1.lat') == col('i2.lat')) &
+                                 (col('i1.lon') == col('i2.lon')) &
+                                 (col('i1.tiv_2015') != col('i2.tiv_2015')) &
+                                 (col('i1.pid') != col('i2.pid')),
+          how='left_anti') \
+    .agg(sum(col('tiv_2016')).alias('tiv_2016'))
+
+result_df.show()
 ```
 
 ### 

@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def main(spark_pg):
+def solution_1(spark_pg):
     # Question link
     # https://www.jiakaobo.com/leetcode/181.%20Employees%20Earning%20More%20Than%20Their%20Managers.html
 
@@ -18,4 +18,4 @@ def main(spark_pg):
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(main)
+    spark_pg_utils.execute(solution_1)
