@@ -12,12 +12,12 @@ def main(spark_pg):
     df = spark_pg.read_table_as_df("surveylog_578")
     df.show()
 
-    result_df = df\
-        .groupby('question_id')\
-        .agg((count(when(col('action') == 'answer', True))/
-              count(when(col('action') == 'show', True))).alias('answer_rate'))\
+    result_df = df \
+        .groupby('question_id') \
+        .agg((count(when(col('action') == 'answer', True)) /
+              count(when(col('action') == 'show', True))).alias('answer_rate')) \
         .orderBy('question_id') \
-        .limit(1)\
+        .limit(1) \
         .select('question_id').alias('survey_log')
 
     result_df.show()
