@@ -7,7 +7,7 @@ def main(spark_pg):
 
     # pyspark code
 
-    from pyspark.sql.functions import count
+    from pyspark.sql.functions import count, desc
 
     stud_df = spark_pg.read_table_as_df("student_580")
     stud_df.show()
@@ -18,7 +18,8 @@ def main(spark_pg):
     result_df = dep_df\
         .join(stud_df, on='dept_id', how='left')\
         .groupby('dept_name')\
-        .agg(count('student_id')).alias('student_number')
+        .agg(count('student_id').alias('student_number'))\
+        .orderBy(desc('student_number'))
 
     result_df.show()
 

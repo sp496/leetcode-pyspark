@@ -185,7 +185,7 @@ result_df.show()
 ### [580. Count Student Number in Departments](https://www.jiakaobo.com/leetcode/580.%20Count%20Student%20Number%20in%20Departments.html)
 
 ```python
-from pyspark.sql.functions import count
+from pyspark.sql.functions import count, desc
 
 stud_df = spark_pg.read_table_as_df("student_580")
 stud_df.show()
@@ -196,7 +196,8 @@ dep_df.show()
 result_df = dep_df\
     .join(stud_df, on='dept_id', how='left')\
     .groupby('dept_name')\
-    .agg(count('student_id')).alias('student_number')
+    .agg(count('student_id').alias('student_number'))\
+    .orderBy(desc('student_number'))
 
 result_df.show()
 ```
