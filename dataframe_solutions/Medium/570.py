@@ -7,16 +7,16 @@ def solution_1(spark):
 
     # pyspark code
 
-    from pyspark.sql.functions import col, count
+    import pyspark.sql.functions as F
 
     emp_df = spark.read_table_as_df("employee_570")
     emp_df.show()
 
-    result_df = emp_df.alias('emp')\
-        .join(emp_df.alias('mgr'), on=col('emp.manager_id') == col('mgr.id'))\
-        .groupby([col('emp.manager_id'), col('mgr.name')]).agg(count('emp.id').alias('reports'))\
-        .filter(col('reports') >= 5)\
-        .select(col('mgr.name'))
+    result_df = emp_df.alias('emp') \
+        .join(emp_df.alias('mgr'), on=F.col('emp.manager_id') == F.col('mgr.id')) \
+        .groupby([F.col('emp.manager_id'), F.col('mgr.name')]).agg(F.count('emp.id').alias('reports')) \
+        .filter(F.col('reports') >= 5) \
+        .select(F.col('mgr.name'))
 
     result_df.show()
 

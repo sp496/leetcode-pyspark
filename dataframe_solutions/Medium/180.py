@@ -6,19 +6,19 @@ def solution_1(spark):
     # https://www.jiakaobo.com/leetcode/180.%20Consecutive%20Numbers.html
 
     # pyspark code
-    from pyspark.sql.functions import col, asc, lead
+    import pyspark.sql.functions as F
     from pyspark.sql.window import Window
 
-    window_spec = Window.orderBy(asc(col('id')))
+    window_spec = Window.orderBy(F.asc(F.col('id')))
 
     logs_df = spark.read_table_as_df("Logs_180")
     logs_df.show()
 
-    result_df = logs_df\
-        .withColumn('second_num', lead(col('num')).over(window_spec))\
-        .withColumn('third_num', lead(col('second_num')).over(window_spec))\
-        .where((col('second_num') == col('num')) & (col('third_num') == col('second_num')))\
-        .select(col('num').alias('ConsecutiveNums'))
+    result_df = logs_df \
+        .withColumn('second_num', F.lead(F.col('num')).over(window_spec)) \
+        .withColumn('third_num', F.lead(F.col('second_num')).over(window_spec)) \
+        .where((F.col('second_num') == F.col('num')) & (F.col('third_num') == F.col('second_num'))) \
+        .select(F.col('num').alias('ConsecutiveNums'))
 
     result_df.show()
 

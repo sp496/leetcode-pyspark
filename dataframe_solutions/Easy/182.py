@@ -6,13 +6,13 @@ def solution_1(spark):
     # https://www.jiakaobo.com/leetcode/182.%20Duplicate%20Emails.html
 
     # pyspark code
-    from pyspark.sql.functions import col
+    import pyspark.sql.functions as F
 
     person_df = spark.read_table_as_df("person_182")
     result_df = person_df \
         .groupBy('email').count() \
-        .filter(col('count') > 1) \
-        .select(col('email'))
+        .filter(F.col('count') > 1) \
+        .select(F.col('email'))
 
     result_df.show()
 

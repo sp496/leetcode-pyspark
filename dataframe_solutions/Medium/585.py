@@ -3,22 +3,22 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
     # Question link
-    # https://www.jiakaobo.com/leetcode.html
+    # https://www.jiakaobo.com/leetcode/585.%20Investments%20in%202016.html
 
     # pyspark code
 
-    from pyspark.sql.functions import col, sum
+    import pyspark.sql.functions as F
 
     inv_df = spark.read_table_as_df("insurance_585")
     inv_df.show()
 
     result_df = inv_df.alias('i1') \
-        .join(inv_df.alias('i2'), on=(col('i1.lat') == col('i2.lat')) &
-                                     (col('i1.lon') == col('i2.lon')) &
-                                     (col('i1.tiv_2015') != col('i2.tiv_2015')) &
-                                     (col('i1.pid') != col('i2.pid')),
+        .join(inv_df.alias('i2'), on=(F.col('i1.lat') == F.col('i2.lat')) &
+                                     (F.col('i1.lon') == F.col('i2.lon')) &
+                                     (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')) &
+                                     (F.col('i1.pid') != F.col('i2.pid')),
               how='left_anti') \
-        .agg(sum(col('tiv_2016')).alias('tiv_2016'))
+        .agg(F.sum(F.col('tiv_2016')).alias('tiv_2016'))
 
     result_df.show()
 

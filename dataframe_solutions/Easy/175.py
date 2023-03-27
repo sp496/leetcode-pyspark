@@ -6,15 +6,15 @@ def solution_1(spark):
     # https://www.jiakaobo.com/leetcode/175.%20Combine%20Two%20Tables.html
 
     # pyspark code
-    from pyspark.sql.functions import col
+    import pyspark.sql.functions as F
 
     person_df = spark.read_table_as_df("person_175")
     address_df = spark.read_table_as_df("address_175")
 
     result_df = person_df \
         .join(address_df, on='personid') \
-        .select(col("firstname").alias("FirstName"), col("lastname").alias("LastName"), col("city").alias("City"),
-                col("state").alias("State"))
+        .select(F.col("firstname").alias("FirstName"), F.col("lastname").alias("LastName"), F.col("city").alias("City"),
+                F.col("state").alias("State"))
 
     result_df.show()
 

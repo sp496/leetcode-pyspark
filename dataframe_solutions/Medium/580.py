@@ -7,7 +7,7 @@ def solution_1(spark):
 
     # pyspark code
 
-    from pyspark.sql.functions import count, desc
+    import pyspark.sql.functions as F
 
     stud_df = spark.read_table_as_df("student_580")
     stud_df.show()
@@ -18,8 +18,8 @@ def solution_1(spark):
     result_df = dep_df\
         .join(stud_df, on='dept_id', how='left')\
         .groupby('dept_name')\
-        .agg(count('student_id').alias('student_number'))\
-        .orderBy(desc('student_number'))
+        .agg(F.count('student_id').alias('student_number'))\
+        .orderBy(F.desc('student_number'))
 
     result_df.show()
 
