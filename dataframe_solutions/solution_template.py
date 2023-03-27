@@ -1,13 +1,13 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode.html
 
     # pyspark code
 
-    df = spark_pg.read_table_as_df("scores_178")
+    df = spark.read_table_as_df("scores_178")
     df.show()
 
     result_df = df

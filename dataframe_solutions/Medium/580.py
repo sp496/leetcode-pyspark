@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/580.%20Count%20Student%20Number%20in%20Departments.html
 
@@ -9,10 +9,10 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import count, desc
 
-    stud_df = spark_pg.read_table_as_df("student_580")
+    stud_df = spark.read_table_as_df("student_580")
     stud_df.show()
 
-    dep_df = spark_pg.read_table_as_df("department_580")
+    dep_df = spark.read_table_as_df("department_580")
     dep_df.show()
 
     result_df = dep_df\

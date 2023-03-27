@@ -11,7 +11,7 @@ from pyspark.sql.window import Window
 from pyspark.sql.functions import col, dense_rank, desc
 
 window_spec = Window.orderBy(desc("salary"))
-employee_df = spark_pg.read_table_as_df("employee_181")
+employee_df = spark.read_table_as_df("employee_181")
 employee_df.show()
 
 result_df = employee_df\
@@ -29,7 +29,7 @@ from pyspark.sql.window import Window
 
 rank_spec = Window.orderBy(desc(col('score')))
 
-scores_df = spark_pg.read_table_as_df("scores_178")
+scores_df = spark.read_table_as_df("scores_178")
 result_df = scores_df.\
     withColumn('dense_rank', dense_rank().over(rank_spec))
 result_df.show()
@@ -43,7 +43,7 @@ from pyspark.sql.window import Window
 
 window_spec = Window.orderBy(asc(col('id')))
 
-logs_df = spark_pg.read_table_as_df("Logs_180")
+logs_df = spark.read_table_as_df("Logs_180")
 logs_df.show()
 
 result_df = logs_df\
@@ -61,10 +61,10 @@ result_df.show()
 from pyspark.sql.functions import col, desc, rank
 from pyspark.sql.window import Window
 
-emp_df = spark_pg.read_table_as_df("employee_184")
+emp_df = spark.read_table_as_df("employee_184")
 emp_df.show()
 
-dep_df = spark_pg.read_table_as_df("department_184")
+dep_df = spark.read_table_as_df("department_184")
 dep_df.show()
 
 w = Window.partitionBy(col('dep.id')).orderBy(desc(col('emp.salary')))
@@ -86,7 +86,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, sum
 
-act_df = spark_pg.read_table_as_df("activity_534")
+act_df = spark.read_table_as_df("activity_534")
 act_df.show()
 
 result_df = act_df.alias('a1') \
@@ -106,7 +106,7 @@ result_df.show()
 from pyspark.sql.functions import col, rank, when, count, countDistinct, round
 from pyspark.sql.window import Window
 
-act_df = spark_pg.read_table_as_df("activity_550")
+act_df = spark.read_table_as_df("activity_550")
 act_df.show()
 
 w = Window.partitionBy(col('a1.player_id')).orderBy('a1.event_date')
@@ -128,7 +128,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, count
 
-emp_df = spark_pg.read_table_as_df("employee_570")
+emp_df = spark.read_table_as_df("employee_570")
 emp_df.show()
 
 result_df = emp_df.alias('emp')\
@@ -146,9 +146,9 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, count
 
-can_df = spark_pg.read_table_as_df("candidate_574")
+can_df = spark.read_table_as_df("candidate_574")
 can_df.show()
-vote_df = spark_pg.read_table_as_df("vote_574")
+vote_df = spark.read_table_as_df("vote_574")
 vote_df.show()
 
 result_df = vote_df.alias('v')\
@@ -167,7 +167,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, count, when
 
-df = spark_pg.read_table_as_df("surveylog_578")
+df = spark.read_table_as_df("surveylog_578")
 df.show()
 
 result_df = df\
@@ -187,10 +187,10 @@ result_df.show()
 ```python
 from pyspark.sql.functions import count, desc
 
-stud_df = spark_pg.read_table_as_df("student_580")
+stud_df = spark.read_table_as_df("student_580")
 stud_df.show()
 
-dep_df = spark_pg.read_table_as_df("department_580")
+dep_df = spark.read_table_as_df("department_580")
 dep_df.show()
 
 result_df = dep_df\
@@ -207,7 +207,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, sum
 
-inv_df = spark_pg.read_table_as_df("insurance_585")
+inv_df = spark.read_table_as_df("insurance_585")
 inv_df.show()
 
 result_df = inv_df.alias('i1') \
@@ -226,7 +226,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, count, desc
 
-req_df = spark_pg.read_table_as_df("request_accepted_602")
+req_df = spark.read_table_as_df("request_accepted_602")
 req_df.show()
 
 result_df = req_df.select([col('requester_id').alias('id'), col('accepter_id').alias('friend_id')])\
@@ -243,7 +243,7 @@ result_df.show()
 ```python
 from pyspark.sql.functions import col, when
 
-tree_df = spark_pg.read_table_as_df("tree_608")
+tree_df = spark.read_table_as_df("tree_608")
 tree_df.show()
 
 # result_df = tree_df.select(col("id").isin(tree_df["p_id"]).alias("match"))

@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/184.%20Department%20Highest%20Salary.html
 
@@ -10,10 +10,10 @@ def solution_1(spark_pg):
     from pyspark.sql.functions import col, desc, rank
     from pyspark.sql.window import Window
 
-    emp_df = spark_pg.read_table_as_df("employee_184")
+    emp_df = spark.read_table_as_df("employee_184")
     emp_df.show()
 
-    dep_df = spark_pg.read_table_as_df("department_184")
+    dep_df = spark.read_table_as_df("department_184")
     dep_df.show()
 
     w = Window.partitionBy(col('dep.id')).orderBy(desc(col('emp.salary')))

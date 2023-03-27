@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode.html
 
@@ -9,7 +9,7 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import col, sum
 
-    inv_df = spark_pg.read_table_as_df("insurance_585")
+    inv_df = spark.read_table_as_df("insurance_585")
     inv_df.show()
 
     result_df = inv_df.alias('i1') \

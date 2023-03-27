@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/578.%20Get%20Highest%20Answer%20Rate%20Question.html
 
@@ -9,7 +9,7 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import col, count, when
 
-    df = spark_pg.read_table_as_df("surveylog_578")
+    df = spark.read_table_as_df("surveylog_578")
     df.show()
 
     result_df = df \

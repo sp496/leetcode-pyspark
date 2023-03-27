@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode.html
 
@@ -9,9 +9,9 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import col, count
 
-    can_df = spark_pg.read_table_as_df("candidate_574")
+    can_df = spark.read_table_as_df("candidate_574")
     can_df.show()
-    vote_df = spark_pg.read_table_as_df("vote_574")
+    vote_df = spark.read_table_as_df("vote_574")
     vote_df.show()
 
     result_df = vote_df.alias('v')\

@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/550.%20Game%20Play%20Analysis%20IV.html
 
@@ -9,7 +9,7 @@ def solution_1(spark_pg):
     from pyspark.sql.functions import col, rank, when, count, countDistinct, round
     from pyspark.sql.window import Window
 
-    act_df = spark_pg.read_table_as_df("activity_550")
+    act_df = spark.read_table_as_df("activity_550")
     act_df.show()
 
     w = Window.partitionBy(col('a1.player_id')).orderBy('a1.event_date')

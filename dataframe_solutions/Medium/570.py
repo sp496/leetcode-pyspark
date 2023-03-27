@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/570.%20Managers%20with%20at%20Least%205%20Direct%20Reports.html
 
@@ -9,7 +9,7 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import col, count
 
-    emp_df = spark_pg.read_table_as_df("employee_570")
+    emp_df = spark.read_table_as_df("employee_570")
     emp_df.show()
 
     result_df = emp_df.alias('emp')\

@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode.html
 
@@ -9,7 +9,7 @@ def solution_1(spark_pg):
 
     from pyspark.sql.functions import col, count, desc
 
-    req_df = spark_pg.read_table_as_df("request_accepted_602")
+    req_df = spark.read_table_as_df("request_accepted_602")
     req_df.show()
 
     result_df = req_df.select([col('requester_id').alias('id'), col('accepter_id').alias('friend_id')])\

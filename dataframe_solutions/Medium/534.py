@@ -1,14 +1,14 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/534.%20Game%20Play%20Analysis%20III.html
 
     # pyspark code
     from pyspark.sql.functions import col, sum
 
-    act_df = spark_pg.read_table_as_df("activity_534")
+    act_df = spark.read_table_as_df("activity_534")
     act_df.show()
 
     result_df = act_df.alias('a1') \

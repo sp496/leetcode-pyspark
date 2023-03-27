@@ -1,14 +1,14 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/182.%20Duplicate%20Emails.html
 
     # pyspark code
     from pyspark.sql.functions import col
 
-    person_df = spark_pg.read_table_as_df("person_182")
+    person_df = spark.read_table_as_df("person_182")
     result_df = person_df \
         .groupBy('email').count() \
         .filter(col('count') > 1) \

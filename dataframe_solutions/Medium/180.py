@@ -1,7 +1,7 @@
 from dependencies import spark_pg_utils
 
 
-def solution_1(spark_pg):
+def solution_1(spark):
     # Question link
     # https://www.jiakaobo.com/leetcode/180.%20Consecutive%20Numbers.html
 
@@ -11,7 +11,7 @@ def solution_1(spark_pg):
 
     window_spec = Window.orderBy(asc(col('id')))
 
-    logs_df = spark_pg.read_table_as_df("Logs_180")
+    logs_df = spark.read_table_as_df("Logs_180")
     logs_df.show()
 
     result_df = logs_df\
