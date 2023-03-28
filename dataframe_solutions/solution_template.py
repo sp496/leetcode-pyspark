@@ -9,7 +9,6 @@ def solution_1(spark):
 
     import pyspark.sql.functions as F
 
-
     df = spark.read_table_as_df("scores_178")
     df.show()
 
