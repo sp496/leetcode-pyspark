@@ -322,10 +322,25 @@ result_df = cust_df \
 result_df.show()
 ```
 
-### 
+### [1070. Product Sales Analysis III](https://www.jiakaobo.com/leetcode/1070.%20Product%20Sales%20Analysis%20III.html)
 
 ```python
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
 
+w = Window.partitionBy(F.col('product_id')).orderBy(F.col('year'))
+
+sales_df = spark.read_table_as_df("sales_1068")
+sales_df.show()
+
+prod_df = spark.read_table_as_df("product_1068")
+prod_df.show()
+
+result_df = sales_df \
+    .withColumn('n_year', F.rank().over(w)) \
+    .filter(F.col('n_year') == 1)
+
+result_df.show()
 ```
 
 ### 
