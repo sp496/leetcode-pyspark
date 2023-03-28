@@ -299,7 +299,7 @@ result_df = seat_df.alias('s1') \
 result_df.show()
 ```
 
-### [1045. Customers Who Bought All Products] (https://www.jiakaobo.com/leetcode/1045.%20Customers%20Who%20Bought%20All%20Products.html)
+### [1045. Customers Who Bought All Products](https://www.jiakaobo.com/leetcode/1045.%20Customers%20Who%20Bought%20All%20Products.html)
 
 ```python
 import pyspark.sql.functions as F
