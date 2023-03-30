@@ -435,10 +435,28 @@ result_df = events_df \
 result_df.show()
 ```
 
-### 
+### [https://www.jiakaobo.com/leetcode/1132.%20Reported%20Posts%20II.html](https://www.jiakaobo.com/leetcode/1132.%20Reported%20Posts%20II.html)
 
 ```python
+import pyspark.sql.functions as F
 
+actions_df = spark.read_table_as_df("actions_1132")
+actions_df.show()
+
+removals_df = spark.read_table_as_df("removals_1132")
+removals_df.show()
+
+removed = (F.col('remove_date').isNotNull())
+
+result_df = actions_df \
+    .join(removals_df, on='post_id', how='left') \
+    .filter(F.col('extra') == 'spam') \
+    .groupby('action_date') \
+    .agg(((F.count(F.when(removed, True))) * 100 /
+         (F.count(F.col('post_id')))).alias('percentage')) \
+    .select(F.avg('percentage').alias('average_daily_percent'))
+
+result_df.show()
 ```
 
 ### 
