@@ -390,16 +390,28 @@ result_df = books_df.alias('b') \
 result_df.show()
 ```
 
-### 
+### (https://www.jiakaobo.com/leetcode/1107.%20New%20Users%20Daily%20Count.html)
 
 ```python
 
 ```
 
-### 
+### [1112. Highest Grade For Each Student](https://www.jiakaobo.com/leetcode/1112.%20Highest%20Grade%20For%20Each%20Student.html)
 
 ```python
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
 
+w = Window.partitionBy('student_id').orderBy(F.desc('grade'), F.asc('course_id'))
+
+enrol_df = spark.read_table_as_df("enrollments_1112")
+enrol_df.show()
+
+result_df = enrol_df \
+    .withColumn('rank', F.rank().over(w)) \
+    .filter(F.col('rank') == 1) \
+
+result_df.show()
 ```
 
 ### 
