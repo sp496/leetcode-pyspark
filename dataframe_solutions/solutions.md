@@ -103,6 +103,29 @@ result_df.show()
 ### [550. Game Play Analysis IV](https://www.jiakaobo.com/leetcode/550.%20Game%20Play%20Analysis%20IV.html)
 
 ```python
+#solution 1
+
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+
+act_df = spark.read_table_as_df("activity_550")
+act_df.show()
+
+w = Window.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
+
+result_df = act_df.alias('a1') \
+    .withColumn('day', F.rank().over(w)) \
+    .filter(F.col('day') == 1) \
+    .join(act_df.alias('a2'),
+          on=(F.col('a1.player_id') == F.col('a2.player_id')) &
+             (F.col('a2.event_date') == F.col('a1.event_date') + 1),
+          how='left') \
+    .select(F.round(F.count(F.col('a2.player_id'))/F.count(F.col('a1.player_id')), 2).alias('fraction'))
+
+result_df.show()
+
+#solution 2
+
 from pyspark.sql.functions import F.col, rank, when, count, countDistinct, round
 from pyspark.sql.window import Window
 
