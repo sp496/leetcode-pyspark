@@ -521,31 +521,46 @@ result_df = u_df \
 result_df.show()
 ```
 
-### 
+### [1164. Product Price at a Given Date](https://www.jiakaobo.com/leetcode/1164.%20Product%20Price%20at%20a%20Given%20Date.html)
+
+```python
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
+
+prod_df = spark.read_table_as_df("products_1164")
+prod_df.show()
+
+w = Window.partitionBy('product_id').orderBy(F.desc('change_date_'))
+
+result_df = prod_df \
+    .withColumn('change_date_', F.when(F.col('change_date') <= '2019-08-16', F.col('change_date'))) \
+    .withColumn('new_price', F.when(F.col('change_date_') <= '2019-08-16', F.col('new_price')).otherwise(10)) \
+    .withColumn('price', F.first('new_price').over(w)) \
+    .dropDuplicates(['product_id', 'price']) \
+    .select(['product_id', 'price'])
+
+result_df.show()
+```
+
+### [1174. Immediate Food Delivery II](https://www.jiakaobo.com/leetcode/1174.%20Immediate%20Food%20Delivery%20II.html)
 
 ```python
 
 ```
 
-### 
+### [1193. Monthly Transactions I](https://www.jiakaobo.com/leetcode/1193.%20Monthly%20Transactions%20I.html)
 
 ```python
 
 ```
 
-### 
+### [1204. Last Person to Fit in the Bus](https://www.jiakaobo.com/leetcode/1204.%20Last%20Person%20to%20Fit%20in%20the%20Bus.html)
 
 ```python
 
 ```
 
-### 
-
-```python
-
-```
-
-### 
+### [1205. Monthly Transactions II](https://www.jiakaobo.com/leetcode/1205.%20Monthly%20Transactions%20II.html)
 
 ```python
 
