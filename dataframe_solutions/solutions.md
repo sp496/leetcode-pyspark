@@ -566,7 +566,7 @@ result_df.show()
 
 ```
 
-### 
+### [1212. Team Scores in Football Tournament](https://www.jiakaobo.com/leetcode/1212.%20Team%20Scores%20in%20Football%20Tournament.html)
 
 ```python
 

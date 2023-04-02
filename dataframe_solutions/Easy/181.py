@@ -2,10 +2,7 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/181.%20Employees%20Earning%20More%20Than%20Their%20Managers.html
 
-    # pyspark code
     import pyspark.sql.functions as F
 
     employee_df = spark.read_table_as_df("employee_181")

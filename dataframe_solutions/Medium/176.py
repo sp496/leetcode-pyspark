@@ -2,10 +2,7 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html
 
-    # pyspark code
     from pyspark.sql.window import Window
     import pyspark.sql.functions as F
 
@@ -17,6 +14,7 @@ def solution_1(spark):
         .withColumn('dense_rank', F.dense_rank().over(window_spec)) \
         .where(F.col('dense_rank') == 2) \
         .select(F.col('salary').alias('SecondHighestSalary'))
+
     result_df.show()
 
 

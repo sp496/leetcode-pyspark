@@ -2,10 +2,6 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/1045.%20Customers%20Who%20Bought%20All%20Products.html
-
-    # pyspark code
 
     import pyspark.sql.functions as F
 

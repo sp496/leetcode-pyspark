@@ -24,10 +24,6 @@ def solution_1(spark):
 
 
 def solution_2(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode.html
-
-    # pyspark code
 
     import pyspark.sql.functions as F
 

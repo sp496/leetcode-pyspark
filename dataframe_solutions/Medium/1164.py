@@ -2,10 +2,6 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/1164.%20Product%20Price%20at%20a%20Given%20Date.html
-
-    # pyspark code
 
     import pyspark.sql.functions as F
     from pyspark.sql.window import Window

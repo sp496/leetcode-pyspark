@@ -2,10 +2,7 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/534.%20Game%20Play%20Analysis%20III.html
 
-    # pyspark code
     import pyspark.sql.functions as F
 
     act_df = spark.read_table_as_df("activity_534")

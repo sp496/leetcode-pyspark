@@ -2,10 +2,7 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/614.%20Second%20Degree%20Follower.html
 
-    # pyspark code
     import pyspark.sql.functions as F
 
     fol_df = spark.read_table_as_df("follow_614")

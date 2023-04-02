@@ -2,10 +2,7 @@ from dependencies import spark_pg_utils
 
 
 def solution_1(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/550.%20Game%20Play%20Analysis%20IV.html
 
-    # pyspark code
     import pyspark.sql.functions as F
     from pyspark.sql.window import Window
 
@@ -26,10 +23,7 @@ def solution_1(spark):
     result_df.show()
 
 def solution_2(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/550.%20Game%20Play%20Analysis%20IV.html
 
-    # pyspark code
     import pyspark.sql.functions as F
     from pyspark.sql.window import Window
 
