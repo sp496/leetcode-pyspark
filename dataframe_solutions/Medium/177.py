@@ -15,7 +15,7 @@ def solution_1(spark):
     result_df = employee_df \
         .withColumn('dense_rank', F.dense_rank().over(window_spec)) \
         .where(F.col('dense_rank') == n) \
-        .select(F.col('salary').alias('SecondHighestSalary'))
+        .select(F.col('salary').alias('nthHighestSalary'))
 
     result_df.show()
 

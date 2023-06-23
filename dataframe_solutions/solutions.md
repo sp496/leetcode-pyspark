@@ -8,49 +8,68 @@
 
 ```python
 from pyspark.sql.window import Window
-from pyspark.sql.functions import F.col, dense_rank, desc
+import pyspark.sql.functions as F
 
-window_spec = Window.orderBy(desc("salary"))
+n = 3
+
+window_spec = Window.orderBy(F.desc("salary"))
 employee_df = spark.read_table_as_df("employee_181")
 employee_df.show()
 
-result_df = employee_df\
-    .withColumn('dense_rank', dense_rank().over(window_spec))\
-    .where(F.col('dense_rank') == 2)\
-    .select(F.col('salary').alias('SecondHighestSalary'))
-result_df.show()
+result_df = employee_df \
+    .withColumn('dense_rank', F.dense_rank().over(window_spec)) \
+    .where(F.col('dense_rank') == n) \
+    .select(F.col('salary').alias('nthHighestSalary'))
 ```
 
 ### [178. Rank Scores](https://www.jiakaobo.com/leetcode/178.%20Rank%20Scores.html)
 
 ```python
-from pyspark.sql.functions import F.col, desc, dense_rank
+import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
-rank_spec = Window.orderBy(desc(F.col('score')))
+rank_spec = Window.orderBy(F.desc(F.col('score')))
 
 scores_df = spark.read_table_as_df("scores_178")
-result_df = scores_df.\
-    withColumn('dense_rank', dense_rank().over(rank_spec))
+
+result_df = scores_df \
+    .withColumn('rank', F.dense_rank().over(rank_spec)) \
+    .select(['score', 'rank'])
+
 result_df.show()
 ```
 
 ### [180. Consecutive Numbers](https://www.jiakaobo.com/leetcode/180.%20Consecutive%20Numbers.html)
 
 ```python
-from pyspark.sql.functions import F.col, asc, lead
+# solution 1
+# using distinct() makes sure we don't pick the same number when there are more than 3 consecutive numbers
+import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
-window_spec = Window.orderBy(asc(F.col('id')))
+window_spec = Window.orderBy(F.asc(F.col('id')))
 
 logs_df = spark.read_table_as_df("Logs_180")
 logs_df.show()
 
-result_df = logs_df\
-    .withColumn('second_num', lead(F.col('num')).over(window_spec))\
-    .withColumn('third_num', lead(F.col('second_num')).over(window_spec))\
-    .where((F.col('second_num') == F.col('num')) & (F.col('third_num') == F.col('second_num')))\
-    .select(F.col('num').alias('ConsecutiveNums'))
+result_df = logs_df \
+    .withColumn('second_num', F.lead(F.col('num')).over(window_spec)) \
+    .withColumn('third_num', F.lead(F.col('second_num')).over(window_spec)) \
+    .where((F.col('second_num') == F.col('num')) & (F.col('third_num') == F.col('second_num'))) \
+    .select(F.col('num').alias('ConsecutiveNums')).distinct()
+
+#solution 2
+# pyspark equivalent of sql selecting from a table t1, table t2, table t3
+import pyspark.sql.functions as F
+
+logs_df = spark.read_table_as_df("Logs_180")
+logs_df.show()
+
+result_df = logs_df.alias("l1") \
+    .join(logs_df.alias("l2"), on=F.col("l1.Id") == F.col("l2.Id") - 1) \
+    .join(logs_df.alias("l3"), on=F.col("l2.Id") == F.col("l3.Id") - 1) \
+    .where((F.col("l1.num") == F.col("l2.num")) & (F.col("l2.num") == F.col("l3.num"))) \
+    .select(F.col("l1.num").alias('ConsecutiveNums')).distinct()
 
 result_df.show()
 ```
@@ -58,7 +77,7 @@ result_df.show()
 ### [184. Department Highest Salary](https://www.jiakaobo.com/leetcode/184.%20Department%20Highest%20Salary.html)
 
 ```python
-from pyspark.sql.functions import F.col, desc, rank
+import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
 emp_df = spark.read_table_as_df("employee_184")
@@ -67,13 +86,12 @@ emp_df.show()
 dep_df = spark.read_table_as_df("department_184")
 dep_df.show()
 
-w = Window.partitionBy(F.col('dep.id')).orderBy(desc(F.col('emp.salary')))
+w = Window.partitionBy(F.col('dep.id')).orderBy(F.desc(F.col('emp.salary')))
 
-result_df = \
-    emp_df.alias('emp') \
-    .join(dep_df.alias('dep'), on=F.col('emp.department_id') == F.col('dep.id'), how='inner')\
-    .withColumn('rank', rank().over(w))\
-    .where(F.col('rank') == 1)\
+result_df = emp_df.alias('emp') \
+    .join(dep_df.alias('dep'), on=F.col('emp.department_id') == F.col('dep.id'), how='inner') \
+    .withColumn('rank', F.rank().over(w)) \
+    .where(F.col('rank') == 1) \
     .select([F.col('dep.name').alias('Department'), F.col('emp.name').alias('Employee'), 'salary'])
 
 result_df.show()
@@ -84,7 +102,7 @@ result_df.show()
 ### [534. Game Play Analysis III](https://www.jiakaobo.com/leetcode/534.%20Game%20Play%20Analysis%20III.html)
 
 ```python
-from pyspark.sql.functions import F.col, sum
+import pyspark.sql.functions as F
 
 act_df = spark.read_table_as_df("activity_534")
 act_df.show()
@@ -92,9 +110,9 @@ act_df.show()
 result_df = act_df.alias('a1') \
     .join(act_df.alias('a2'),
           on=(F.col('a1.player_id') == F.col('a2.player_id')) & (F.col('a2.event_date') <= F.col('a1.event_date')),
-          how='inner')\
-    .groupby([F.col('a1.player_id'), F.col('a1.event_date')])\
-    .agg(sum('a2.games_played').alias('games_played_so_far'))
+          how='inner') \
+    .groupby([F.col('a1.player_id'), F.col('a1.event_date')]) \
+    .agg(F.sum('a2.games_played').alias('games_played_so_far'))
 
 result_df.show()
 ```
@@ -545,13 +563,41 @@ result_df.show()
 ### [1174. Immediate Food Delivery II](https://www.jiakaobo.com/leetcode/1174.%20Immediate%20Food%20Delivery%20II.html)
 
 ```python
+import pyspark.sql.functions as F
+from pyspark.sql.window import Window
 
+del_df = spark.read_table_as_df("delivery_1174")
+del_df.show()
+
+w = Window.partitionBy('customer_id').orderBy('order_date')
+
+immediate_order = (F.col('customer_pref_delivery_date') == F.col('order_date'))
+first_order = (F.col('order_number') == 1)
+
+result_df = del_df \
+    .withColumn('order_number', F.rank().over(w)) \
+    .select(((F.count(F.when(first_order & immediate_order, True)) /
+              F.count(F.when(first_order, True))) * 100).alias('immediate_percentage'))
+
+result_df.show()
 ```
 
 ### [1193. Monthly Transactions I](https://www.jiakaobo.com/leetcode/1193.%20Monthly%20Transactions%20I.html)
 
 ```python
+import pyspark.sql.functions as F
 
+t_df = spark.read_table_as_df("transactions_1193")
+t_df.show()
+
+result_df = t_df \
+    .groupby([F.date_format('trans_date', 'yyyy-MM').alias('month'), 'country']) \
+    .agg(F.count('id').alias('trans_count'),
+         F.count(F.when(F.col('state') == 'approved', True)).alias('approved_count'),
+         F.sum('amount').alias('trans_total_amount'),
+         F.sum(F.when(F.col('state') == 'approved', F.col('amount'))).alias('approved_total_amount'))
+
+result_df.show()
 ```
 
 ### [1204. Last Person to Fit in the Bus](https://www.jiakaobo.com/leetcode/1204.%20Last%20Person%20to%20Fit%20in%20the%20Bus.html)
