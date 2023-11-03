@@ -28,13 +28,12 @@ def solution_2(spark):
     logs_df.show()
 
     result_df = logs_df.alias("l1") \
-        .join(logs_df.alias("l2"), on=F.col("l1.Id") == F.col("l2.Id") - 1) \
-        .join(logs_df.alias("l3"), on=F.col("l2.Id") == F.col("l3.Id") - 1) \
-        .where((F.col("l1.num") == F.col("l2.num")) & (F.col("l2.num") == F.col("l3.num"))) \
+        .join(logs_df.alias("l2"), on=(F.col("l2.Id") == F.col("l1.Id") + 1) & (F.col("l2.num") == F.col("l1.num"))) \
+        .join(logs_df.alias("l3"), on=(F.col("l3.Id") == F.col("l1.Id") + 2) & (F.col("l3.num") == F.col("l1.num"))) \
         .select(F.col("l1.num").alias('ConsecutiveNums')).distinct()
 
     result_df.show()
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_3)
+    spark_pg_utils.execute(solution_2)
