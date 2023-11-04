@@ -7,34 +7,51 @@
 ### [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
 
 ```python
-from pyspark.sql.window import Window
-import pyspark.sql.functions as F
+from pyspark.sql import functions as F, Window as W
 
-n = 3
-
-window_spec = Window.orderBy(F.desc("salary"))
 employee_df = spark.read_table_as_df("employee_181")
 employee_df.show()
 
+wspec = W.orderBy(F.desc("salary")).rowsBetween(W.unboundedPreceding, W.currentRow)
+
 result_df = employee_df \
-    .withColumn('dense_rank', F.dense_rank().over(window_spec)) \
+    .withColumn('dense_rank', F.dense_rank().over(wspec)) \
+    .where(F.col('dense_rank') == 2) \
+    .select(F.col('salary').alias('SecondHighestSalary')).distinct()
+
+result_df.show()
+```
+
+### [177. Nth Highest Salary](https://www.jiakaobo.com/leetcode/177.%20Nth%20Highest%20Salary.html)
+
+```python
+from pyspark.sql import functions as F, Window as W
+
+n = 2
+employee_df = spark.read_table_as_df("employee_181")
+employee_df.show()
+
+wspec = W.orderBy(F.desc("salary")).rowsBetween(W.unboundedPreceding, W.currentRow)
+
+result_df = employee_df \
+    .withColumn('dense_rank', F.dense_rank().over(wspec)) \
     .where(F.col('dense_rank') == n) \
-    .select(F.col('salary').alias('nthHighestSalary'))
+    .select(F.col('salary').alias('nthHighestSalary')).distinct()
+
+result_df.show()
 ```
 
 ### [178. Rank Scores](https://www.jiakaobo.com/leetcode/178.%20Rank%20Scores.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
-rank_spec = Window.orderBy(F.desc(F.col('score')))
+wspec = W.orderBy(F.desc(F.col('score'))).rowsBetween(W.unboundedPreceding, W.currentRow)
 
 scores_df = spark.read_table_as_df("scores_178")
 
 result_df = scores_df \
-    .withColumn('rank', F.dense_rank().over(rank_spec)) \
-    .select(['score', 'rank'])
+    .select('score', F.dense_rank().over(wspec).alias('Rank'))
 
 result_df.show()
 ```
@@ -44,19 +61,20 @@ result_df.show()
 ```python
 # solution 1
 # using distinct() makes sure we don't pick the same number when there are more than 3 consecutive numbers
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
-window_spec = Window.orderBy(F.asc(F.col('id')))
+wspec = W.orderBy(F.asc('id'))
 
 logs_df = spark.read_table_as_df("Logs_180")
 logs_df.show()
 
 result_df = logs_df \
-    .withColumn('second_num', F.lead(F.col('num')).over(window_spec)) \
-    .withColumn('third_num', F.lead(F.col('second_num')).over(window_spec)) \
+    .withColumn('second_num', F.lead(F.col('num')).over(wspec)) \
+    .withColumn('third_num', F.lead(F.col('second_num')).over(wspec)) \
     .where((F.col('second_num') == F.col('num')) & (F.col('third_num') == F.col('second_num'))) \
     .select(F.col('num').alias('ConsecutiveNums')).distinct()
+
+result_df.show()
 
 #solution 2
 # pyspark equivalent of sql selecting from a table t1, table t2, table t3
@@ -77,8 +95,7 @@ result_df.show()
 ### [184. Department Highest Salary](https://www.jiakaobo.com/leetcode/184.%20Department%20Highest%20Salary.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
 emp_df = spark.read_table_as_df("employee_184")
 emp_df.show()
@@ -86,11 +103,11 @@ emp_df.show()
 dep_df = spark.read_table_as_df("department_184")
 dep_df.show()
 
-w = Window.partitionBy(F.col('dep.id')).orderBy(F.desc(F.col('emp.salary')))
+wspec = W.partitionBy('dep.id').orderBy(F.desc('emp.salary')).rowsBetween(W.unboundedPreceding, W.currentRow)
 
 result_df = emp_df.alias('emp') \
     .join(dep_df.alias('dep'), on=F.col('emp.department_id') == F.col('dep.id'), how='inner') \
-    .withColumn('rank', F.rank().over(w)) \
+    .withColumn('rank', F.rank().over(wspec)) \
     .where(F.col('rank') == 1) \
     .select([F.col('dep.name').alias('Department'), F.col('emp.name').alias('Employee'), 'salary'])
 
@@ -102,6 +119,20 @@ result_df.show()
 ### [534. Game Play Analysis III](https://www.jiakaobo.com/leetcode/534.%20Game%20Play%20Analysis%20III.html)
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
+
+act_df = spark.read_table_as_df("activity_534")
+act_df.show()
+
+wspec = W.partitionBy('player_id').orderBy('event_date').rowsBetween(W.unboundedPreceding, W.currentRow)
+
+result_df = act_df \
+            .select('player_id', 'event_date', F.sum('games_played').over(wspec).alias('games_played_so_far'))
+
+result_df.show()
+
+#solution 2
 import pyspark.sql.functions as F
 
 act_df = spark.read_table_as_df("activity_534")
@@ -123,16 +154,15 @@ result_df.show()
 ```python
 #solution 1
 
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
 act_df = spark.read_table_as_df("activity_550")
 act_df.show()
 
-w = Window.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
+wspec = W.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
 
 result_df = act_df.alias('a1') \
-    .withColumn('day', F.rank().over(w)) \
+    .withColumn('day', F.rank().over(wspec)) \
     .filter(F.col('day') == 1) \
     .join(act_df.alias('a2'),
           on=(F.col('a1.player_id') == F.col('a2.player_id')) &
@@ -144,21 +174,22 @@ result_df.show()
 
 #solution 2
 
-from pyspark.sql.functions import F.col, rank, when, count, countDistinct, round
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
 act_df = spark.read_table_as_df("activity_550")
 act_df.show()
 
-w = Window.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
+wspec = W.partitionBy('a1.player_id').orderBy('a1.event_date')
 
 result_df = act_df.alias('a1') \
-    .withColumn('day', rank().over(w)) \
+    .withColumn('day', F.rank().over(wspec)) \
     .join(act_df.alias('a2'),
-          on=(F.col('a1.player_id') == F.col('a2.player_id')) & (F.col('a2.event_date') == F.col('a1.event_date') + 1),
+          on=(F.col('a1.player_id') == F.col('a2.player_id')) &
+             (F.col('a2.event_date') == F.col('a1.event_date') + 1),
           how='left') \
-    .select(round((count(when((F.col('day') == 1) & (F.col('a2.player_id').isNotNull()), F.col('a1.player_id'))
-                         .otherwise(None)) / countDistinct(F.col("a1.player_id"))), 2).alias('fraction'))
+    .select(F.round((F.count(F.when((F.col('day') == 1)
+                                    & (F.col('a2.player_id').isNotNull()), F.col('a1.player_id'))
+                             .otherwise(None)) / F.countDistinct(F.col("a1.player_id"))), 2).alias('fraction'))
 
 result_df.show()
 ```

@@ -3,17 +3,16 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
 
-    import pyspark.sql.functions as F
-    from pyspark.sql.window import Window
+    from pyspark.sql import functions as F, Window as W
 
-    window_spec = Window.orderBy(F.asc(F.col('id')))
+    wspec = W.orderBy(F.asc('id'))
 
     logs_df = spark.read_table_as_df("Logs_180")
     logs_df.show()
 
     result_df = logs_df \
-        .withColumn('second_num', F.lead(F.col('num')).over(window_spec)) \
-        .withColumn('third_num', F.lead(F.col('second_num')).over(window_spec)) \
+        .withColumn('second_num', F.lead(F.col('num')).over(wspec)) \
+        .withColumn('third_num', F.lead(F.col('second_num')).over(wspec)) \
         .where((F.col('second_num') == F.col('num')) & (F.col('third_num') == F.col('second_num'))) \
         .select(F.col('num').alias('ConsecutiveNums')).distinct()
 

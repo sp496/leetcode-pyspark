@@ -3,16 +3,15 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
 
-    import pyspark.sql.functions as F
-    from pyspark.sql.window import Window
+    from pyspark.sql import functions as F, Window as W
 
     act_df = spark.read_table_as_df("activity_550")
     act_df.show()
 
-    w = Window.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
+    wspec = W.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
 
     result_df = act_df.alias('a1') \
-        .withColumn('day', F.rank().over(w)) \
+        .withColumn('day', F.rank().over(wspec)) \
         .filter(F.col('day') == 1) \
         .join(act_df.alias('a2'),
               on=(F.col('a1.player_id') == F.col('a2.player_id')) &
@@ -24,16 +23,15 @@ def solution_1(spark):
 
 def solution_2(spark):
 
-    import pyspark.sql.functions as F
-    from pyspark.sql.window import Window
+    from pyspark.sql import functions as F, Window as W
 
     act_df = spark.read_table_as_df("activity_550")
     act_df.show()
 
-    w = Window.partitionBy(F.col('a1.player_id')).orderBy('a1.event_date')
+    wspec = W.partitionBy('a1.player_id').orderBy('a1.event_date')
 
     result_df = act_df.alias('a1') \
-        .withColumn('day', F.rank().over(w)) \
+        .withColumn('day', F.rank().over(wspec)) \
         .join(act_df.alias('a2'),
               on=(F.col('a1.player_id') == F.col('a2.player_id')) &
                  (F.col('a2.event_date') == F.col('a1.event_date') + 1),
