@@ -4,7 +4,7 @@
 
 ## Medium
 
-### [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
+## [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
 
 ```python
 from pyspark.sql import functions as F, Window as W
