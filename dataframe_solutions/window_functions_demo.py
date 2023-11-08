@@ -21,8 +21,8 @@ df.select('key', 'num', F.first('num').over(w2).alias('first')).show()
 df.select('key', 'num', F.last('num').over(w1).alias('last')).show()
 df.select('key', 'num', F.last('num').over(w2).alias('last')).show()
 
-w4 = W.partitionBy('key').orderBy('num').rowsBetween(W.unboundedPreceding, W.unboundedFollowing)
-w3 = W.partitionBy('key').orderBy('num').rowsBetween(W.unboundedPreceding, W.currentRow)
+w3 = W.partitionBy('key').orderBy('num').rowsBetween(W.unboundedPreceding, W.unboundedFollowing)
+w4 = W.partitionBy('key').orderBy('num').rowsBetween(W.unboundedPreceding, W.currentRow)
 
 print('--------------------------------------------------------')
 
@@ -32,7 +32,7 @@ df.select('key', 'num', F.first('num').over(w3).alias('first')).show()
 df.select('key', 'num', F.first('num').over(w4).alias('first')).show()
 df.select('key', 'num', F.last('num').over(w3).alias('last')).show()
 df.select('key', 'num', F.last('num').over(w4).alias('last')).show()
-df.select('key', 'num', F.dense_rank().over(w3).alias('rank')).show()
+# df.select('key', 'num', F.dense_rank().over(w3).alias('rank')).show()
 df.select('key', 'num', F.dense_rank().over(w4).alias('rank')).show()
 
 
@@ -41,4 +41,4 @@ w5 = W.partitionBy('key').orderBy('num').rowsBetween(-1, 0)
 df.select('key', 'num', F.sum('num').over(w5).alias('sum')).show()
 df.select('key', 'num', F.first('num').over(w5).alias('first')).show()
 df.select('key', 'num', F.last('num').over(w5).alias('last')).show()
-df.select('key', 'num', F.dense_rank().over(w5).alias('rank')).show()
+# df.select('key', 'num', F.dense_rank().over(w5).alias('rank')).show()
