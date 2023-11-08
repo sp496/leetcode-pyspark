@@ -8,6 +8,7 @@ def solution_1(spark):
     req_df = spark.read_table_as_df("request_accepted_602")
     req_df.show()
 
+    #can use unionAll too
     result_df = req_df.select([F.col('requester_id').alias('id'), F.col('accepter_id').alias('friend_id')]) \
         .union(req_df.select([F.col('accepter_id').alias('id'), F.col('requester_id').alias('friend_id')])) \
         .groupby('id').agg(F.count('friend_id').alias('num')) \

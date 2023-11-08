@@ -377,7 +377,7 @@ fol_df = spark.read_table_as_df("follow_614")
 fol_df.show()
 
 result_df = fol_df.alias('f1')\
-    .join(fol_df.alias('f2'), on=F.col('f1.followee') == F.col('f2.follower'), how='semi') \
+    .join(fol_df.alias('f2'), on=F.col('f1.followee') == F.col('f2.follower'), how='left_semi') \
     .groupby('followee').agg(F.count('follower').alias('num'))
 
 result_df.show()
@@ -679,625 +679,625 @@ result_df.show()
 
 ```
 
-### 
+### [1264. Page Recommendations](https://www.jiakaobo.com/leetcode/1264.%20Page%20Recommendations.html)
 
 ```python
 
 ```
 
-### 
+### [1270. All People Report to the Given Manager](https://www.jiakaobo.com/leetcode/1270.%20All%20People%20Report%20to%20the%20Given%20Manager.html)
 
 ```python
 
 ```
 
-### 
+### [1285. Find the Start and End Number of Continuous Ranges](https://www.jiakaobo.com/leetcode/1285.%20Find%20the%20Start%20and%20End%20Number%20of%20Continuous%20Ranges.html)
 
 ```python
 
 ```
 
-### 
+### [1308. Running Total for Different Genders](https://www.jiakaobo.com/leetcode/1308.%20Running%20Total%20for%20Different%20Genders.html)
 
 ```python
 
 ```
 
-### 
+### [1321. Restaurant Growth](https://www.jiakaobo.com/leetcode/1321.%20Restaurant%20Growth.html)
 
 ```python
 
 ```
 
-### 
+### [1341. Movie Rating](https://www.jiakaobo.com/leetcode/1341.%20Movie%20Rating.html)
 
 ```python
 
 ```
 
-### 
+### [1355. Activity Participants](https://www.jiakaobo.com/leetcode/1355.%20Activity%20Participants.html)
 
 ```python
 
 ```
 
-### 
+### [1364. Number of Trusted Contacts of a Customer](https://www.jiakaobo.com/leetcode/1364.%20Number%20of%20Trusted%20Contacts%20of%20a%20Customer.html)
 
 ```python
 
 ```
 
-### 
+### [1393. Capital Gain/Loss](https://www.jiakaobo.com/leetcode/1393.%20Capital%20Gain%20Loss.html)
 
 ```python
 
 ```
 
-### 
+### [1398. Customers Who Bought Products A and B but Not C](https://www.jiakaobo.com/leetcode/1398.%20Customers%20Who%20Bought%20Products%20A%20and%20B%20but%20Not%20C.html)
 
 ```python
 
 ```
 
-### 
+### [1440. Evaluate Boolean Expression](https://www.jiakaobo.com/leetcode/1440.%20Evaluate%20Boolean%20Expression.html)
 
 ```python
 
 ```
 
-### 
+### [1445. Apples & Oranges](https://www.jiakaobo.com/leetcode/1445.%20Apples%20&%20Oranges.html)
 
 ```python
 
 ```
 
-### 
+### [1454. Active Users](https://www.jiakaobo.com/leetcode/1454.%20Active%20Users.html)
 
 ```python
 
 ```
 
-### 
+### [1459. Rectangles Area](https://www.jiakaobo.com/leetcode/1459.%20Rectangles%20Area.html)
 
 ```python
 
 ```
 
-### 
+### [1468. Calculate Salaries](https://www.jiakaobo.com/leetcode/1468.%20Calculate%20Salaries.html)
 
 ```python
 
 ```
 
-### 
+### [1501. Countries You Can Safely Invest In](https://www.jiakaobo.com/leetcode/1501.%20Countries%20You%20Can%20Safely%20Invest%20In.html)
 
 ```python
 
 ```
 
-### 
+### [1532. The Most Recent Three Orders](https://www.jiakaobo.com/leetcode/1532.%20The%20Most%20Recent%20Three%20Orders.html)
 
 ```python
 
 ```
 
-### 
+### [1549. The Most Recent Orders for Each Product](https://www.jiakaobo.com/leetcode/1549.%20The%20Most%20Recent%20Orders%20for%20Each%20Product.html)
 
 ```python
 
 ```
 
-### 
+### [1555. Bank Account Summary](https://www.jiakaobo.com/leetcode/1555.%20Bank%20Account%20Summary.html)
 
 ```python
 
 ```
 
-### 
+### [1596. The Most Frequently Ordered Products for Each Customer](https://www.jiakaobo.com/leetcode/1596.%20The%20Most%20Frequently%20Ordered%20Products%20for%20Each%20Customer.html) 
 
 ```python
 
 ```
 
-### 
+### [1613. Find the Missing IDs](https://www.jiakaobo.com/leetcode/1613.%20Find%20the%20Missing%20IDs.html) 
 
 ```python
 
 ```
 
-### 
+### [1699. Number of Calls Between Two Persons](https://www.jiakaobo.com/leetcode/1699.%20Number%20of%20Calls%20Between%20Two%20Persons.html) 
 
 ```python
 
 ```
 
-### 
+### [1709. Biggest Window Between Visits](https://www.jiakaobo.com/leetcode/1709.%20Biggest%20Window%20Between%20Visits.html) 
 
 ```python
 
 ```
 
-### 
+### [1715. Count Apples and Oranges](https://www.jiakaobo.com/leetcode/1715.%20Count%20Apples%20and%20Oranges.html) 
 
 ```python
 
 ```
 
-### 
+### [1747. Leetflex Banned Accounts](https://www.jiakaobo.com/leetcode/1747.%20Leetflex%20Banned%20Accounts.html) 
 
 ```python
 
 ```
 
-### 
+### [1783. Grand Slam Titles](https://www.jiakaobo.com/leetcode/1783.%20Grand%20Slam%20Titles.html) 
 
 ```python
 
 ```
 
-### 
+### [1811. Find Interview Candidates](https://www.jiakaobo.com/leetcode/1811.%20Find%20Interview%20Candidates.html) 
 
 ```python
 
 ```
 
-### 
+### [1831. Maximum Transaction Each Day](https://www.jiakaobo.com/leetcode/1831.%20Maximum%20Transaction%20Each%20Day.html) 
 
 ```python
 
 ```
 
-### 
+### [1841. League Statistics](https://www.jiakaobo.com/leetcode/1841.%20League%20Statistics.html) 
 
 ```python
 
 ```
 
-### 
+### [1843. Suspicious Bank Accounts](https://www.jiakaobo.com/leetcode/1843.%20Suspicious%20Bank%20Accounts.html) 
 
 ```python
 
 ```
 
-### 
+### [1867. Orders With Maximum Quantity Above Average](https://www.jiakaobo.com/leetcode/1867.%20Orders%20With%20Maximum%20Quantity%20Above%20Average.html) 
 
 ```python
 
 ```
 
-### 
+### [1875. Group Employees of the Same Salary](https://www.jiakaobo.com/leetcode/1875.%20Group%20Employees%20of%20the%20Same%20Salary.html) 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []()
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 
 ```
 
-### 
+### []() 
 
 ```python
 

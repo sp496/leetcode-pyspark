@@ -9,7 +9,7 @@ def solution_1(spark):
     fol_df.show()
 
     result_df = fol_df.alias('f1')\
-        .join(fol_df.alias('f2'), on=F.col('f1.followee') == F.col('f2.follower'), how='semi') \
+        .join(fol_df.alias('f2'), on=F.col('f1.followee') == F.col('f2.follower'), how='left_semi') \
         .groupby('followee').agg(F.count('follower').alias('num'))
 
     result_df.show()
