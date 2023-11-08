@@ -4,7 +4,7 @@
 
 ## Medium
 
-## [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
+### [176. Second Highest Salary](https://www.jiakaobo.com/leetcode/176.%20Second%20Highest%20Salary.html)
 
 ```python
 from pyspark.sql import functions as F, Window as W
@@ -277,6 +277,7 @@ result_df.show()
 ### [585. Investments in 2016](https://www.jiakaobo.com/leetcode/585.%20Investments%20in%202016.html)
 
 ```python
+#solution 1
 from pyspark.sql.functions import F.col, sum
 
 inv_df = spark.read_table_as_df("insurance_585")
@@ -286,11 +287,26 @@ result_df = inv_df.alias('i1') \
     .join(inv_df.alias('i2'), on=(F.col('i1.lat') == F.col('i2.lat')) &
                                  (F.col('i1.lon') == F.col('i2.lon')) &
                                  (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')) &
-                                 (F.col('i1.pid') != F.col('i2.pid')),
-          how='left_anti') \
+                                 (F.col('i1.pid') != F.col('i2.pid')), how='left_anti') \
     .agg(sum(F.col('tiv_2016')).alias('tiv_2016'))
 
 result_df.show()
+
+#solution 2
+import pyspark.sql.functions as F
+
+inv_df = spark.read_table_as_df("insurance_585")
+inv_df.show()
+
+result_df = inv_df.alias('i1') \
+    .join(inv_df.alias('i2'), on=(F.col('i1.lat') == F.col('i2.lat')) &
+                                 (F.col('i1.lon') == F.col('i2.lon')) &
+                                 (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')), how='left') \
+    .filter(F.col('i2.pid').isNull()) \
+    .agg(F.sum(F.col('i1.tiv_2016')).alias('tiv_2016'))
+
+result_df.show()
+
 ```
 
 ### [602. Friend Requests II: Who Has the Most Friends](https://www.jiakaobo.com/leetcode/602.%20Friend%20Requests%20II:%20Who%20Has%20the%20Most%20Friends.html)
@@ -330,10 +346,24 @@ result_df = tree_df.alias('t1') \
 result_df.show()
 ```
 
-### 
+### [612. Shortest Distance in a Plane](https://www.jiakaobo.com/leetcode/612.%20Shortest%20Distance%20in%20a%20Plane.html)
 
 ```python
+import pyspark.sql.functions as F
 
+points_df = spark.read_table_as_df("point_2d_612")
+points_df.show()
+
+# could use cross join too
+result_df = points_df.alias('p1') \
+    .join(points_df.alias('p2'),
+          on=(F.col('p1.x') != F.col('p2.x')) | (F.col('p1.y') != F.col('p2.y')),
+          how='inner') \
+    .withColumn('distance', F.sqrt(F.pow(F.col('p2.x') - F.col('p1.x'), 2) +
+                                   F.pow(F.col('p2.y') - F.col('p1.y'), 2))) \
+    .select(F.min('distance').alias('shortest'))
+
+result_df.show()
 ```
 
 ### [614. Second Degree Follower](https://www.jiakaobo.com/leetcode/614.%20Second%20Degree%20Follower.html)
