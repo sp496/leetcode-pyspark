@@ -871,157 +871,157 @@ result_df.show()
 
 ```
 
-### []() 
+### [1907. Count Salary Categories](https://www.jiakaobo.com/leetcode/1907.%20Count%20Salary%20Categories.html) 
 
 ```python
 
 ```
 
-### []() 
+### [1934. Confirmation Rate](https://www.jiakaobo.com/leetcode/1934.%20Confirmation%20Rate.html) 
 
 ```python
 
 ```
 
-### []() 
+### [1949. Strong Friendship](https://www.jiakaobo.com/leetcode/1949.%20Strong%20Friendship.html) 
 
 ```python
 
 ```
 
-### []() 
+### [1951. All the Pairs With the Maximum Number of Common Followers](https://www.jiakaobo.com/leetcode/1951.%20All%20the%20Pairs%20With%20the%20Maximum%20Number%20of%20Common%20Followers.html) 
 
 ```python
 
 ```
 
-### []() 
+### [1988. Find Cutoff Score for Each School](https://www.jiakaobo.com/leetcode/1988.%20Find%20Cutoff%20Score%20for%20Each%20School.html) 
 
 ```python
 
 ```
 
-### []() 
+### [1990. Count the Number of Experiments](https://www.jiakaobo.com/leetcode/1990.%20Count%20the%20Number%20of%20Experiments.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2020. Number of Accounts That Did Not Stream]() 
 
 ```python
 
 ```
 
-### []() 
+### [2041. Accepted Candidates From the Interviews](https://www.jiakaobo.com/leetcode/2041.%20Accepted%20Candidates%20From%20the%20Interviews.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2051. The Category of Each Member in the Store](https://www.jiakaobo.com/leetcode/2051.%20The%20Category%20of%20Each%20Member%20in%20the%20Store.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2066. Account Balance](https://www.jiakaobo.com/leetcode/2066.%20Account%20Balance.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2084. Drop Type 1 Orders for Customers With Type 0 Orders](https://www.jiakaobo.com/leetcode/2084.%20Drop%20Type%201%20Orders%20for%20Customers%20With%20Type%200%20Orders.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2112. The Airport With the Most Traffic](https://www.jiakaobo.com/leetcode/2112.%20The%20Airport%20With%20the%20Most%20Traffic.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2142. The Number of Passengers in Each Bus I](https://www.jiakaobo.com/leetcode/2142.%20The%20Number%20of%20Passengers%20in%20Each%20Bus%20I.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2159. Order Two Columns Independently](https://www.jiakaobo.com/leetcode/2159.%20Order%20Two%20Columns%20Independently.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2175. The Change in Global Rankings](https://www.jiakaobo.com/leetcode/2175.%20The%20Change%20in%20Global%20Rankings.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2228. Users With Two Purchases Within Seven Days](https://www.jiakaobo.com/leetcode/2228.%20Users%20With%20Two%20Purchases%20Within%20Seven%20Days.html) 
 
 ```python
 
 ```
 
-### []()
+### [2238. Number of Times a Driver Was a Passenger](https://www.jiakaobo.com/leetcode/2238.%20Number%20of%20Times%20a%20Driver%20Was%20a%20Passenger.html)
 
 ```python
 
 ```
 
-### []() 
+### [2292. Products With Three or More Orders in Two Consecutive Years](https://www.jiakaobo.com/leetcode/2292.%20Products%20With%20Three%20or%20More%20Orders%20in%20Two%20Consecutive%20Years.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2298. Tasks Count in the Weekend](https://www.jiakaobo.com/leetcode/2298.%20Tasks%20Count%20in%20the%20Weekend.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2308. Arrange Table by Gender](https://www.jiakaobo.com/leetcode/2308.%20Arrange%20Table%20by%20Gender.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2314. The First Day of the Maximum Recorded Degree in Each City](https://www.jiakaobo.com/leetcode/2314.%20The%20First%20Day%20of%20the%20Maximum%20Recorded%20Degree%20in%20Each%20City.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2324. Product Sales Analysis IV](https://www.jiakaobo.com/leetcode/2324.%20Product%20Sales%20Analysis%20IV.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2346. Compute the Rank as a Percentage](https://www.jiakaobo.com/leetcode/2346.%20Compute%20the%20Rank%20as%20a%20Percentage.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2372. Calculate the Influence of Each Salesperson](https://www.jiakaobo.com/leetcode/2372.%20Calculate%20the%20Influence%20of%20Each%20Salesperson.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2388. Change Null Values in a Table to the Previous Value](https://www.jiakaobo.com/leetcode/2388.%20Change%20Null%20Values%20in%20a%20Table%20to%20the%20Previous%20Value.html) 
 
 ```python
 
 ```
 
-### []() 
+### [2394. Employees With Deductions](https://www.jiakaobo.com/leetcode/2394.%20Employees%20With%20Deductions.html) 
 
 ```python
 
