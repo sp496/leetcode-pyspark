@@ -527,7 +527,7 @@ result_df = books_df.alias('b') \
 result_df.show()
 ```
 
-### (https://www.jiakaobo.com/leetcode/1107.%20New%20Users%20Daily%20Count.html)
+### [1107. New Users Daily Count](https://www.jiakaobo.com/leetcode/1107.%20New%20Users%20Daily%20Count.html)
 
 ```python
 
