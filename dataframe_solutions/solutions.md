@@ -615,13 +615,11 @@ actions_df.show()
 removals_df = spark.read_table_as_df("removals_1132")
 removals_df.show()
 
-
 result_df = actions_df \
-    .join(removals_df, on='post_id', how='left') \
     .filter(F.col('extra') == 'spam') \
+    .join(removals_df, on='post_id', how='left') \
     .groupby('action_date') \
-    .agg(((F.count(F.when((F.col('remove_date').isNotNull()), True))) * 100 /
-         (F.count(F.col('post_id')))).alias('percentage')) \
+    .agg((F.count('remove_date') * 100 / (F.count('post_id'))).alias('percentage')) \
     .select(F.avg('percentage').alias('average_daily_percent'))
 
 result_df.show()
