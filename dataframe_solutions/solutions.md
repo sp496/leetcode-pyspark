@@ -552,17 +552,17 @@ result_df.show()
 ### [1112. Highest Grade For Each Student](https://www.jiakaobo.com/leetcode/1112.%20Highest%20Grade%20For%20Each%20Student.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
-
-w = Window.partitionBy('student_id').orderBy(F.desc('grade'), F.asc('course_id'))
+from pyspark.sql import functions as F, Window as W
 
 enrol_df = spark.read_table_as_df("enrollments_1112")
 enrol_df.show()
 
+wspec = W.partitionBy('student_id').orderBy(F.desc('grade'), F.asc('course_id'))
+
 result_df = enrol_df \
-    .withColumn('rank', F.rank().over(w)) \
+    .withColumn('rank', F.rank().over(wspec)) \
     .filter(F.col('rank') == 1) \
+    .select('student_id', 'course_id', 'grade')
 
 result_df.show()
 ```
@@ -570,17 +570,33 @@ result_df.show()
 ### [1126. Active Businesses](https://www.jiakaobo.com/leetcode/1126.%20Active%20Businesses.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+# solution 1
+from pyspark.sql import functions as F, Window as W
 
 events_df = spark.read_table_as_df("events_1126")
 events_df.show()
 
-w = Window.partitionBy('event_type')
+wspec = W.partitionBy('event_type')
 
 result_df = events_df \
-    .withColumn('avg_event_occurence', F.avg('occurences').over(w)) \
+    .withColumn('avg_event_occurence', F.avg('occurences').over(wspec)) \
     .filter(F.col('occurences') > F.col('avg_event_occurence')) \
+    .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
+    .filter(F.col('event_types') >= 2) \
+    .select('business_id')
+
+result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F
+
+events_df = spark.read_table_as_df("events_1126")
+events_df.show()
+
+result_df = events_df \
+    .groupby('event_type').agg(F.avg('occurences').alias('avg_occurences')) \
+    .join(events_df, on='event_type') \
+    .filter(F.col('occurences') > F.col('avg_occurences')) \
     .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
     .filter(F.col('event_types') >= 2) \
     .select('business_id')

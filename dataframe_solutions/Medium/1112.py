@@ -3,17 +3,17 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
 
-    import pyspark.sql.functions as F
-    from pyspark.sql.window import Window
-
-    w = Window.partitionBy('student_id').orderBy(F.desc('grade'), F.asc('course_id'))
+    from pyspark.sql import functions as F, Window as W
 
     enrol_df = spark.read_table_as_df("enrollments_1112")
     enrol_df.show()
 
+    wspec = W.partitionBy('student_id').orderBy(F.desc('grade'), F.asc('course_id'))
+
     result_df = enrol_df \
-        .withColumn('rank', F.rank().over(w)) \
+        .withColumn('rank', F.rank().over(wspec)) \
         .filter(F.col('rank') == 1) \
+        .select('student_id', 'course_id', 'grade')
 
     result_df.show()
 
