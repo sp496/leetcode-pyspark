@@ -441,10 +441,7 @@ result_df.show()
 ### [1070. Product Sales Analysis III](https://www.jiakaobo.com/leetcode/1070.%20Product%20Sales%20Analysis%20III.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
-
-w = Window.partitionBy(F.col('product_id')).orderBy(F.col('year'))
+from pyspark.sql import functions as F, Window as W
 
 sales_df = spark.read_table_as_df("sales_1068")
 sales_df.show()
@@ -452,8 +449,10 @@ sales_df.show()
 prod_df = spark.read_table_as_df("product_1068")
 prod_df.show()
 
+wspec = W.partitionBy('product_id').orderBy('year')
+
 result_df = sales_df \
-    .withColumn('n_year', F.rank().over(w)) \
+    .withColumn('n_year', F.rank().over(wspec)) \
     .filter(F.col('n_year') == 1)
 
 result_df.show()
@@ -462,8 +461,7 @@ result_df.show()
 ### [1077. Project Employees III](https://www.jiakaobo.com/leetcode/1077.%20Project%20Employees%20III.html)
 
 ```python
-import pyspark.sql.functions as F
-from pyspark.sql.window import Window
+from pyspark.sql import functions as F, Window as W
 
 project_df = spark.read_table_as_df("project_1077")
 project_df.show()
@@ -471,11 +469,11 @@ project_df.show()
 emp_df = spark.read_table_as_df("employee_1077")
 emp_df.show()
 
-w = Window.partitionBy('project_id').orderBy(F.desc('experience_years'))
+wspec = W.partitionBy('project_id').orderBy(F.desc('experience_years'))
 
 result_df = project_df \
     .join(emp_df, on='employee_id', how='inner') \
-    .withColumn('exp_rank', F.rank().over(w)) \
+    .withColumn('exp_rank', F.dense_rank().over(wspec)) \
     .filter(F.col('exp_rank') == 1) \
     .select(['project_id', 'employee_id'])
 
@@ -485,6 +483,7 @@ result_df.show()
 ### [1098. Unpopular Books](https://www.jiakaobo.com/leetcode/1098.%20Unpopular%20Books.html)
 
 ```python
+#solution_1
 import pyspark.sql.functions as F
 
 books_df = spark.read_table_as_df("books_1098")
@@ -500,6 +499,28 @@ result_df = books_df.alias('b') \
           on=(F.col('o.book_id') == F.col('b.book_id')) & in_the_past_year,
           how='left') \
     .filter((F.col('b.available_from') < F.date_sub(F.to_date(F.lit('2019-06-23')), 30))) \
+    .groupby([F.col('b.book_id'), 'name']).agg(F.sum('quantity')) \
+    .select(['book_id', 'name'])
+
+result_df.show()
+
+#solution_2
+import pyspark.sql.functions as F
+
+books_df = spark.read_table_as_df("books_1098")
+books_df.show()
+
+orders_df = spark.read_table_as_df("orders_1098")
+orders_df.show()
+
+books_df = books_df.filter((F.col('available_from') < F.date_sub(F.to_date(F.lit('2019-06-23')), 30)))
+
+in_the_past_year = (F.col('o.dispatch_date') > F.date_sub(F.to_date(F.lit('2019-06-23')), 365))
+
+result_df = books_df.alias('b') \
+    .join(orders_df.alias('o'),
+          on=(F.col('o.book_id') == F.col('b.book_id')) & in_the_past_year,
+          how='left') \
     .groupby([F.col('b.book_id'), 'name']).agg(F.sum('quantity')) \
     .select(['book_id', 'name'])
 

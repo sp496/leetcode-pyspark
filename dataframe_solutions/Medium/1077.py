@@ -3,8 +3,7 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
 
-    import pyspark.sql.functions as F
-    from pyspark.sql.window import Window
+    from pyspark.sql import functions as F, Window as W
 
     project_df = spark.read_table_as_df("project_1077")
     project_df.show()
@@ -12,11 +11,11 @@ def solution_1(spark):
     emp_df = spark.read_table_as_df("employee_1077")
     emp_df.show()
 
-    w = Window.partitionBy('project_id').orderBy(F.desc('experience_years'))
+    wspec = W.partitionBy('project_id').orderBy(F.desc('experience_years'))
 
     result_df = project_df \
         .join(emp_df, on='employee_id', how='inner') \
-        .withColumn('exp_rank', F.rank().over(w)) \
+        .withColumn('exp_rank', F.dense_rank().over(wspec)) \
         .filter(F.col('exp_rank') == 1) \
         .select(['project_id', 'employee_id'])
 

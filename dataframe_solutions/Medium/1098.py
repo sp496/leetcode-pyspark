@@ -25,11 +25,30 @@ def solution_1(spark):
 
 
 def solution_2(spark):
-    # Question link
-    # https://www.jiakaobo.com/leetcode/1098.%20Unpopular%20Books.html
 
-    # pyspark code
+    import pyspark.sql.functions as F
 
+    books_df = spark.read_table_as_df("books_1098")
+    books_df.show()
+
+    orders_df = spark.read_table_as_df("orders_1098")
+    orders_df.show()
+
+    books_df = books_df.filter((F.col('available_from') < F.date_sub(F.to_date(F.lit('2019-06-23')), 30)))
+
+    in_the_past_year = (F.col('o.dispatch_date') > F.date_sub(F.to_date(F.lit('2019-06-23')), 365))
+
+    result_df = books_df.alias('b') \
+        .join(orders_df.alias('o'),
+              on=(F.col('o.book_id') == F.col('b.book_id')) & in_the_past_year,
+              how='left') \
+        .groupby([F.col('b.book_id'), 'name']).agg(F.sum('quantity')) \
+        .select(['book_id', 'name'])
+
+    result_df.show()
+
+
+def solution_3(spark):
     import pyspark.sql.functions as F
 
     books_df = spark.read_table_as_df("books_1098")
@@ -49,4 +68,4 @@ def solution_2(spark):
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_1)
+    spark_pg_utils.execute(solution_2)
