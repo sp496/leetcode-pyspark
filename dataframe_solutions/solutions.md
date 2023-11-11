@@ -386,6 +386,20 @@ result_df.show()
 ### [626. Exchange Seats](https://www.jiakaobo.com/leetcode/626.%20Exchange%20Seats.html)
 
 ```python
+#solution_i
+from pyspark.sql import functions as F, Window as W
+
+seat_df = spark.read_table_as_df("seat_626")
+seat_df.show()
+
+wspec = W.orderBy('id').rowsBetween(-1, 1)
+result_df = seat_df \
+            .withColumn("id", F.when(F.col('id') % 2 == 0,  F.first('id').over(wspec)).otherwise(F.last('id').over(wspec))) \
+            .orderBy('id')
+
+result_df.show()
+
+#solution_2
 import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
