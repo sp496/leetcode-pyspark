@@ -729,7 +729,38 @@ result_df.show()
 ### [1204. Last Person to Fit in the Bus](https://www.jiakaobo.com/leetcode/1204.%20Last%20Person%20to%20Fit%20in%20the%20Bus.html)
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
 
+q_df = spark.read_table_as_df("queue_1204")
+q_df.show()
+
+wspec = W.orderBy('Turn').rowsBetween(W.unboundedPreceding, W.currentRow)
+
+result_df = q_df \
+        .withColumn('Total Weight', F.sum('weight').over(wspec)) \
+        .filter(F.col('Total Weight') <= 1000) \
+        .orderBy(F.desc('turn')) \
+        .limit(1) \
+        .select('person_name')
+
+result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F, Window as W
+
+q_df = spark.read_table_as_df("queue_1204")
+q_df.show()
+
+result_df = q_df.alias('q1') \
+        .join(q_df.alias('q2'), on=F.col('q2.turn') <= F.col('q1.turn')) \
+        .groupby('q1.turn', 'q1.person_name').agg(F.sum('q2.weight').alias('Total Weight')) \
+        .filter(F.col('Total Weight') <= 1000) \
+        .orderBy(F.desc('q1.turn')) \
+        .limit(1) \
+        .select('person_name')
+
+result_df.show()
 ```
 
 ### [1205. Monthly Transactions II](https://www.jiakaobo.com/leetcode/1205.%20Monthly%20Transactions%20II.html)
