@@ -16,9 +16,10 @@ def solution_1(spark):
 
     result_df = u_df \
         .join(o_df,
-              on=(F.col('user_id') == F.col('buyer_id')) & (F.col('order_date') >= '2019-01-01'),
+              on=(F.col('user_id') == F.col('buyer_id')) &
+                 (F.col('order_date').between('2019-01-01', '2019-12-31')),
               how='left') \
-        .groupby(['buyer_id', 'join_date']) \
+        .groupby(['user_id', 'join_date']) \
         .agg(F.count('order_id').alias('orders_in_2019'))
 
     result_df.show()

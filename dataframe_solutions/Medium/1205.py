@@ -23,8 +23,6 @@ def solution_1(spark):
              F.count(F.when(F.col('state') == 'chargeback', 1)).alias('chargeback_count'),
              F.sum(F.when(F.col('state') == 'chargeback', F.col('amount')).otherwise(0)).alias('chargeback_amount'))
 
-
-
     result_df.show()
 
 

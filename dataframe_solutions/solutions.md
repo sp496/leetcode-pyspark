@@ -657,9 +657,10 @@ i_df.show()
 
 result_df = u_df \
     .join(o_df,
-          on=(F.col('user_id') == F.col('buyer_id')) & (F.col('order_date') >= '2019-01-01'),
+          on=(F.col('user_id') == F.col('buyer_id')) &
+             (F.col('order_date').between('2019-01-01', '2019-12-31')),
           how='left') \
-    .groupby(['buyer_id', 'join_date']) \
+    .groupby(['user_id', 'join_date']) \
     .agg(F.count('order_id').alias('orders_in_2019'))
 
 result_df.show()
@@ -785,6 +786,8 @@ result_df = c_df.alias('c') \
          F.sum(F.when(F.col('state') == 'approved', F.col('amount')).otherwise(0)).alias('approved_amount'),
          F.count(F.when(F.col('state') == 'chargeback', 1)).alias('chargeback_count'),
          F.sum(F.when(F.col('state') == 'chargeback', F.col('amount')).otherwise(0)).alias('chargeback_amount'))
+
+result_df.show()
 ```
 
 ### [1212. Team Scores in Football Tournament](https://www.jiakaobo.com/leetcode/1212.%20Team%20Scores%20in%20Football%20Tournament.html)
