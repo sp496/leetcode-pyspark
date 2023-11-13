@@ -530,6 +530,7 @@ result_df.show()
 ### [1107. New Users Daily Count](https://www.jiakaobo.com/leetcode/1107.%20New%20Users%20Daily%20Count.html)
 
 ```python
+#solution 1
 from pyspark.sql import functions as F, Window as W
 
 traffic_df = spark.read_table_as_df("traffic_1107")
@@ -544,9 +545,25 @@ result_df = traffic_df \
             .filter(F.col('activity_date') >= F.date_sub(F.to_date(F.lit('2019-06-30')), 90)) \
             .groupby('activity_date').agg(F.count('*').alias('user_count'))
 
-# .filter(F.col('activity_date').between(F.date_sub(F.to_date(F.lit('2019-06-30.')), 30),
-#                                        F.date_add(F.to_date(F.lit('2019-06-30.')), 30))) \
 result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F, Window as W
+
+traffic_df = spark.read_table_as_df("traffic_1107")
+traffic_df.show()
+
+wspec = W.partitionBy(['user_id', 'activity']).orderBy('activity_date')
+
+result_df = traffic_df \
+            .filter(F.col('activity') == 'login') \
+            .withColumn('rnk', F.rank().over(wspec)) \
+            .filter(F.col('rnk') == 1) \
+            .filter(F.col('activity_date') >= F.date_sub(F.lit('2019-06-30'), 90)) \
+            .groupby('activity_date').agg(F.count('*').alias('user_count'))
+
+result_df.show()
+
 ```
 
 ### [1112. Highest Grade For Each Student](https://www.jiakaobo.com/leetcode/1112.%20Highest%20Grade%20For%20Each%20Student.html)
