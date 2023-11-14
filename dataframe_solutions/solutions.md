@@ -898,7 +898,20 @@ result_df.show()
 ### [1285. Find the Start and End Number of Continuous Ranges](https://www.jiakaobo.com/leetcode/1285.%20Find%20the%20Start%20and%20End%20Number%20of%20Continuous%20Ranges.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+l_df = spark.read_table_as_df("logs_1285")
+l_df.show()
+
+wspec = W.orderBy('log_id')
+
+result_df = l_df \
+            .withColumn('num', F.row_number().over(wspec)) \
+            .groupby(F.col('log_id') - F.col('num')) \
+            .agg(F.min('log_id').alias('start_id'), F.max('log_id').alias('end_id')) \
+            .select('start_id', 'end_id')
+
+result_df.show()
 ```
 
 ### [1308. Running Total for Different Genders](https://www.jiakaobo.com/leetcode/1308.%20Running%20Total%20for%20Different%20Genders.html)
