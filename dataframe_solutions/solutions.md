@@ -880,7 +880,19 @@ result_df.show()
 ### [1270. All People Report to the Given Manager](https://www.jiakaobo.com/leetcode/1270.%20All%20People%20Report%20to%20the%20Given%20Manager.html)
 
 ```python
+from pyspark.sql import functions as F
 
+e_df = spark.read_table_as_df("employees_1270")
+e_df.show()
+
+result_df = e_df.alias('e1') \
+            .join(e_df.alias('e2'), on=F.col('e1.manager_id') == F.col('e2.employee_id')) \
+            .join(e_df.alias('e3'), on=F.col('e2.manager_id') == F.col('e3.employee_id')) \
+            .filter(((F.col('e1.manager_id') == 1) | (F.col('e2.manager_id') == 1) | (F.col('e3.manager_id') == 1)) &
+                    (F.col('e1.employee_id') != 1)) \
+            .select('e1.employee_id')
+
+result_df.show()
 ```
 
 ### [1285. Find the Start and End Number of Continuous Ranges](https://www.jiakaobo.com/leetcode/1285.%20Find%20the%20Start%20and%20End%20Number%20of%20Continuous%20Ranges.html)
