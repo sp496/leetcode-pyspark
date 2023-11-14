@@ -329,19 +329,37 @@ result_df.show()
 ### [608. Tree Node](https://www.jiakaobo.com/leetcode/608.%20Tree%20Node.html) 
 
 ```python
-from pyspark.sql.functions import F.col, when
+#solution 1
+import pyspark.sql.functions as F
 
 tree_df = spark.read_table_as_df("tree_608")
 tree_df.show()
 
-# result_df = tree_df.select(F.col("id").isin(tree_df["p_id"]).alias("match"))
 result_df = tree_df.alias('t1') \
-    .join(tree_df.alias('t2'), on=F.col('t1.id') == F.col('t2.p_id'), how='left')\
-    .withColumn('type', when(F.col('t1.p_id').isNull(), 'Root')
-                .otherwise(when(F.col('t2.p_id').isNull(), 'Leaf').otherwise('Inner')))\
-    .select([F.col('t1.id'), F.col('type')])\
-    .dropDuplicates()\
+    .join(tree_df.alias('t2'), on=F.col('t1.id') == F.col('t2.p_id'), how='left') \
+    .withColumn('type', F.when(F.col('t1.p_id').isNull(), 'Root')
+                        .when(F.col('t2.p_id').isNull(), 'Leaf')
+                        .otherwise('Inner')) \
+    .select([F.col('t1.id'), F.col('type')]) \
+    .dropDuplicates() \
     .orderBy('id')
+
+result_df.show()
+
+#solution 2
+import pyspark.sql.functions as F
+
+tree_df = spark.read_table_as_df("tree_608")
+tree_df.show()
+
+result_df = tree_df.alias('t1') \
+            .join(tree_df.alias('t2'), on=(F.col('t1.id') == F.col('t2.p_id')), how='left_anti') \
+            .withColumn('type', F.lit("Leaf")) \
+            .union(tree_df.alias('t1') \
+            .join(tree_df.alias('t2'), on=(F.col('t1.id') == F.col('t2.p_id')), how='left_semi') \
+            .withColumn('type', F.when(F.col('t1.p_id').isNull(), 'Root').otherwise('Inner'))) \
+            .select('id', 'type') \
+            .orderBy('id')
 
 result_df.show()
 ```
