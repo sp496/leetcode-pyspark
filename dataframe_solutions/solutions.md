@@ -917,7 +917,19 @@ result_df.show()
 ### [1308. Running Total for Different Genders](https://www.jiakaobo.com/leetcode/1308.%20Running%20Total%20for%20Different%20Genders.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+s_df = spark.read_table_as_df("scores_1308")
+s_df.show()
+
+wspec = W.partitionBy('gender').orderBy('day').rowsBetween(W.unboundedPreceding, W.currentRow)
+
+result_df = s_df \
+            .withColumn('total', F.sum('score_points').over(wspec)) \
+            .orderBy('gender', 'day') \
+            .select('gender', 'day', 'total')
+
+result_df.show()
 ```
 
 ### [1321. Restaurant Growth](https://www.jiakaobo.com/leetcode/1321.%20Restaurant%20Growth.html)
