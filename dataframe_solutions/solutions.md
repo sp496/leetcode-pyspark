@@ -1038,7 +1038,17 @@ result_df.show()
 ### [1440. Evaluate Boolean Expression](https://www.jiakaobo.com/leetcode/1440.%20Evaluate%20Boolean%20Expression.html)
 
 ```python
+from pyspark.sql import functions as F
 
+e_df = spark.read_table_as_df("expressions_1440")
+e_df.show()
+
+result_df = e_df \
+    .withColumn('value', F.when(F.col('operator') == '>', F.col('left_operand') > F.col('right_operand'))
+                        .when(F.col('operator') == '<', F.col('left_operand') < F.col('right_operand'))
+                        .when(F.col('operator') == '=', F.col('left_operand') == F.col('right_operand')))
+
+result_df.show()
 ```
 
 ### [1445. Apples & Oranges](https://www.jiakaobo.com/leetcode/1445.%20Apples%20&%20Oranges.html)
