@@ -1014,7 +1014,25 @@ result_df.show()
 ### [1398. Customers Who Bought Products A and B but Not C](https://www.jiakaobo.com/leetcode/1398.%20Customers%20Who%20Bought%20Products%20A%20and%20B%20but%20Not%20C.html)
 
 ```python
+from pyspark.sql import functions as F
 
+o_df = spark.read_table_as_df("orders_1398")
+o_df.show()
+
+c_df = spark.read_table_as_df("customers_1398")
+c_df.show()
+
+result_df = o_df.alias('o1') \
+            .join(o_df.alias('o2'), on=((F.col('o1.customer_id') == F.col('o2.customer_id')) &
+                                        (F.col('o2.product_name') == 'C')), how='left_anti') \
+            .select('customer_id') \
+            .intersect(
+                o_df.filter(F.col('product_name') == 'A').select('customer_id') \
+                    .intersect(o_df.filter(F.col('product_name') == 'B').select('customer_id'))
+                        ) \
+            .join(c_df, on='customer_id')
+
+result_df.show()
 ```
 
 ### [1440. Evaluate Boolean Expression](https://www.jiakaobo.com/leetcode/1440.%20Evaluate%20Boolean%20Expression.html)
