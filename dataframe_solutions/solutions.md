@@ -412,7 +412,8 @@ seat_df.show()
 
 wspec = W.orderBy('id').rowsBetween(-1, 1)
 result_df = seat_df \
-            .withColumn("id", F.when(F.col('id') % 2 == 0,  F.first('id').over(wspec)).otherwise(F.last('id').over(wspec))) \
+            .withColumn("id", F.when(F.col('id') % 2 == 0,  F.first('id').over(wspec))
+                                .otherwise(F.last('id').over(wspec))) \
             .orderBy('id')
 
 result_df.show()
