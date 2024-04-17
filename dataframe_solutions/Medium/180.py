@@ -35,4 +35,4 @@ def solution_2(spark):
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_2)
+    spark_pg_utils.execute(solution_1)

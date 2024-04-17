@@ -9,7 +9,8 @@ def solution_1(spark):
     scores_df = spark.read_table_as_df("scores_178")
 
     result_df = scores_df \
-        .select('score', F.dense_rank().over(wspec).alias('Rank'))
+        .select('score', F.dense_rank().over(wspec).alias('Rank')) \
+        .orderBy(F.asc('Rank'))
 
     result_df.show()
 
