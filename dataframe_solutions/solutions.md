@@ -216,18 +216,18 @@ result_df.show()
 ### [574. Winning Candidate](https://www.jiakaobo.com/leetcode/574.%20Winning%20Candidate.html)
 
 ```python
-from pyspark.sql.functions import F.col, count
+import pyspark.sql.functions as F
 
 can_df = spark.read_table_as_df("candidate_574")
 can_df.show()
 vote_df = spark.read_table_as_df("vote_574")
 vote_df.show()
 
-result_df = vote_df.alias('v')\
-    .join(can_df.alias('c'), on=F.col('v.candidate_id') == F.col('c.id'))\
-    .groupby([F.col('v.candidate_id'), F.col('c.name')]).agg(count('v.id').alias('votes'))\
-    .orderBy(F.col('votes').desc())\
-    .limit(1)\
+result_df = vote_df.alias('v') \
+    .join(can_df.alias('c'), on=F.col('v.candidate_id') == F.col('c.id')) \
+    .groupby([F.col('v.candidate_id'), F.col('c.name')]).agg(F.count('v.id').alias('votes')) \
+    .orderBy(F.col('votes').desc()) \
+    .limit(1) \
     .select(F.col('name'))
 
 result_df.show()
@@ -237,17 +237,17 @@ result_df.show()
 ### [578. Get Highest Answer Rate Question](https://www.jiakaobo.com/leetcode/578.%20Get%20Highest%20Answer%20Rate%20Question.html)
 
 ```python
-from pyspark.sql.functions import F.col, count, when
+import pyspark.sql.functions as F
 
 df = spark.read_table_as_df("surveylog_578")
 df.show()
 
-result_df = df\
-    .groupby('question_id')\
-    .agg((count(when(F.col('action') == 'answer', True))/
-          count(when(F.col('action') == 'show', True))).alias('answer_rate'))\
+result_df = df \
+    .groupby('question_id') \
+    .agg((F.count(F.when(F.col('action') == 'answer', True)) /
+          F.count(F.when(F.col('action') == 'show', True))).alias('answer_rate')) \
     .orderBy('question_id') \
-    .limit(1)\
+    .limit(1) \
     .select('question_id').alias('survey_log')
 
 result_df.show()
@@ -257,7 +257,7 @@ result_df.show()
 ### [580. Count Student Number in Departments](https://www.jiakaobo.com/leetcode/580.%20Count%20Student%20Number%20in%20Departments.html)
 
 ```python
-from pyspark.sql.functions import count, desc
+import pyspark.sql.functions as F
 
 stud_df = spark.read_table_as_df("student_580")
 stud_df.show()
@@ -268,8 +268,8 @@ dep_df.show()
 result_df = dep_df\
     .join(stud_df, on='dept_id', how='left')\
     .groupby('dept_name')\
-    .agg(count('student_id').alias('student_number'))\
-    .orderBy(desc('student_number'))
+    .agg(F.count('student_id').alias('student_number'))\
+    .orderBy(F.desc('student_number'))
 
 result_df.show()
 ```
@@ -278,17 +278,15 @@ result_df.show()
 
 ```python
 #solution 1
-from pyspark.sql.functions import F.col, sum
+import pyspark.sql.functions as F
 
 inv_df = spark.read_table_as_df("insurance_585")
 inv_df.show()
-
 result_df = inv_df.alias('i1') \
     .join(inv_df.alias('i2'), on=(F.col('i1.lat') == F.col('i2.lat')) &
                                  (F.col('i1.lon') == F.col('i2.lon')) &
-                                 (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')) &
-                                 (F.col('i1.pid') != F.col('i2.pid')), how='left_anti') \
-    .agg(sum(F.col('tiv_2016')).alias('tiv_2016'))
+                                 (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')), how='left_anti') \
+    .agg(F.sum(F.col('tiv_2016')).alias('tiv_2016'))
 
 result_df.show()
 
@@ -307,20 +305,37 @@ result_df = inv_df.alias('i1') \
 
 result_df.show()
 
+#solution 3 WRONG
+#cannot use this because lat and long must not be repeated 
+
+import pyspark.sql.functions as F
+
+inv_df = spark.read_table_as_df("insurance_585")
+inv_df.show()
+
+result_df = inv_df.alias('i1') \
+    .join(inv_df.alias('i2'), on=(F.col('i1.lat') != F.col('i2.lat')) &
+                                 (F.col('i1.lon') != F.col('i2.lon')) &
+                                 (F.col('i1.tiv_2015') != F.col('i2.tiv_2015')), how='inner')
+
+
+result_df.show()
+
 ```
 
 ### [602. Friend Requests II: Who Has the Most Friends](https://www.jiakaobo.com/leetcode/602.%20Friend%20Requests%20II:%20Who%20Has%20the%20Most%20Friends.html)
 
 ```python
-from pyspark.sql.functions import F.col, count, desc
+import pyspark.sql.functions as F
 
 req_df = spark.read_table_as_df("request_accepted_602")
 req_df.show()
 
-result_df = req_df.select([F.col('requester_id').alias('id'), F.col('accepter_id').alias('friend_id')])\
-    .union(req_df.select([F.col('accepter_id').alias('id'), F.col('requester_id').alias('friend_id')]))\
-    .groupby('id').agg(count('friend_id').alias('num'))\
-    .orderBy(desc('num'))\
+#can use unionAll too
+result_df = req_df.select([F.col('requester_id').alias('id'), F.col('accepter_id').alias('friend_id')]) \
+    .union(req_df.select([F.col('accepter_id').alias('id'), F.col('requester_id').alias('friend_id')])) \
+    .groupby('id').agg(F.count('friend_id').alias('num')) \
+    .orderBy(F.desc('num')) \
     .limit(1)
 
 result_df.show()
@@ -399,6 +414,21 @@ result_df = fol_df.alias('f1')\
     .groupby('followee').agg(F.count('follower').alias('num'))
 
 result_df.show()
+
+#solution 2
+
+import pyspark.sql.functions as F
+
+fol_df = spark.read_table_as_df("follow_614")
+fol_df.show()
+
+
+result_df = fol_df.alias('f1') \
+    .join(fol_df.alias('f2'), on=F.col('f1.followee') == F.col('f2.follower'), how='inner') \
+    .groupby('f1.followee').agg(F.count('f1.follower').alias('num'))
+
+result_df.show()
+
 ```
 
 ### [626. Exchange Seats](https://www.jiakaobo.com/leetcode/626.%20Exchange%20Seats.html)
@@ -418,7 +448,21 @@ result_df = seat_df \
 
 result_df.show()
 
-#solution_2
+#solution 2
+import pyspark.sql.functions as F
+
+seat_df = spark.read_table_as_df("seat_626")
+seat_df.show()
+
+result_df = seat_df.alias('s1') \
+            .join(seat_df.alias('s2'), on=((F.col('s1.id') % 2 == 0) & (F.col('s2.id') == F.col('s1.id')-1)) |
+                                          ((F.col('s1.id') % 2 == 1) & (F.col('s2.id') == F.col('s1.id')+1 ))
+                                        ,how='left') \
+            .select([F.col('s1.id'), F.ifnull(F.col('s2.student'), F.col('s1.student')).alias('student')])
+
+result_df.show()
+
+#solution 3
 import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
