@@ -11,9 +11,6 @@ def solution_1(spark):
     u_df = spark.read_table_as_df("users_1158")
     u_df.show()
 
-    i_df = spark.read_table_as_df("items_1158")
-    i_df.show()
-
     result_df = u_df \
         .join(o_df,
               on=(F.col('user_id') == F.col('buyer_id')) &

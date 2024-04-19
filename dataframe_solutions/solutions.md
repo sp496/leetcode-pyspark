@@ -731,9 +731,6 @@ o_df.show()
 u_df = spark.read_table_as_df("users_1158")
 u_df.show()
 
-i_df = spark.read_table_as_df("items_1158")
-i_df.show()
-
 result_df = u_df \
     .join(o_df,
           on=(F.col('user_id') == F.col('buyer_id')) &
@@ -748,6 +745,27 @@ result_df.show()
 ### [1164. Product Price at a Given Date](https://www.jiakaobo.com/leetcode/1164.%20Product%20Price%20at%20a%20Given%20Date.html)
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
+
+prod_df = spark.read_table_as_df("products_1164")
+prod_df.show()
+
+wspec = W.partitionBy('product_id').orderBy(F.desc('change_date')).rowsBetween(W.unboundedPreceding, W.currentRow)
+
+ranked_prod_df = prod_df \
+            .filter(F.col('change_date') <= '2019-08-16') \
+            .withColumn('ranking', F.rank().over(wspec)) \
+            .filter(F.col('ranking') == 1)
+
+result_df = prod_df \
+            .select('product_id').distinct() \
+            .join(ranked_prod_df, on='product_id', how='left') \
+            .select(['product_id', F.ifnull(F.col('new_price'), F.lit(10)).alias('price')])
+
+result_df.show()
+
+#solution 2
 import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
@@ -846,6 +864,30 @@ result_df.show()
 ### [1205. Monthly Transactions II](https://www.jiakaobo.com/leetcode/1205.%20Monthly%20Transactions%20II.html)
 
 ```python
+#solution 1
+import pyspark.sql.functions as F
+
+t_df = spark.read_table_as_df("transactions_1205")
+t_df.show()
+
+c_df = spark.read_table_as_df("chargebacks_1205")
+c_df.show()
+
+result_df = c_df.alias('c') \
+    .join(t_df.alias('t'), on=F.col('c.trans_id') == F.col('t.id')) \
+    .select(F.date_format('charge_date', 'yyyy-MM').alias('month'), 'country', 'amount',
+            F.lit('chargeback').alias('state')) \
+    .unionAll(t_df.select(F.date_format('trans_date', 'yyyy-MM').alias('month'), 'country', 'amount',
+                       'state')) \
+    .groupby('month', 'country') \
+    .agg(F.count(F.when(F.col('state') == 'approved', 1)).alias('approved_count'),
+         F.sum(F.when(F.col('state') == 'approved', F.col('amount')).otherwise(0)).alias('approved_amount'),
+         F.count(F.when(F.col('state') == 'chargeback', 1)).alias('chargeback_count'),
+         F.sum(F.when(F.col('state') == 'chargeback', F.col('amount')).otherwise(0)).alias('chargeback_amount'))
+
+result_df.show()
+
+#solution 2
 import pyspark.sql.functions as F
 
 t_df = spark.read_table_as_df("transactions_1205")
