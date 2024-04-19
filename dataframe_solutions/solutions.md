@@ -914,6 +914,30 @@ result_df.show()
 ### [1212. Team Scores in Football Tournament](https://www.jiakaobo.com/leetcode/1212.%20Team%20Scores%20in%20Football%20Tournament.html)
 
 ```python
+#solution 1
+import pyspark.sql.functions as F
+
+t_df = spark.read_table_as_df("teams_1212")
+t_df.show()
+
+m_df = spark.read_table_as_df("matches_1212")
+m_df.show()
+
+result_df = t_df.alias('t') \
+            .join(m_df.alias('m'), on=(F.col('t.team_id')==F.col('m.host_team')) |
+                                      (F.col('t.team_id')==F.col('m.guest_team')), how='left') \
+            .groupby('team_id', 'team_name') \
+            .agg(F.sum(F.when((F.col('team_id') == F.col('host_team')) &
+                              (F.col('host_goals') > F.col('guest_goals')), 3)
+                        .when((F.col('team_id') == F.col('guest_team')) &
+                              (F.col('guest_goals') > F.col('host_goals')), 3)
+                        .when((F.col('host_goals') == F.col('guest_goals')), 1)
+                        .otherwise(0)).alias('num_points')) \
+            .orderBy(F.desc('num_points'), F.asc('team_name'))
+
+result_df.show()
+
+#solution 2
 import pyspark.sql.functions as F
 
 t_df = spark.read_table_as_df("teams_1212")
@@ -1074,7 +1098,25 @@ result_df.show()
 ### [1355. Activity Participants](https://www.jiakaobo.com/leetcode/1355.%20Activity%20Participants.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+a_df = spark.read_table_as_df("activities_1355")
+a_df.show()
+
+f_df = spark.read_table_as_df("friends_1355")
+f_df.show()
+
+wspec = W.orderBy('count').rowsBetween(W.unboundedPreceding, W.unboundedFollowing)
+
+result_df = f_df \
+    .groupby('activity') \
+    .agg(F.count('*').alias('count')) \
+    .withColumn('rank1', F.first('count').over(wspec)) \
+    .withColumn('rank2', F.last('count').over(wspec)) \
+    .filter((F.col('count') != F.col('rank1')) & (F.col('count') != F.col('rank2'))) \
+    .select('activity')
+
+result_df.show()
 ```
 
 ### [1364. Number of Trusted Contacts of a Customer](https://www.jiakaobo.com/leetcode/1364.%20Number%20of%20Trusted%20Contacts%20of%20a%20Customer.html)

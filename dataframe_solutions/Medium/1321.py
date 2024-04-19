@@ -20,18 +20,6 @@ def solution_1(spark):
     result_df.show()
 
 
-def solution_2(spark):
-
-    from pyspark.sql import functions as F, Window as W
-
-    c_df = spark.read_table_as_df("customer_1321")
-    c_df.show()
-
-    result_df = c_df.alias('c1') \
-                .join(c_df.alias('c2'), on=F.col('c1'))
-
-    result_df.show()
-
 
 if __name__ == '__main__':
     spark_pg_utils.execute(solution_1)
