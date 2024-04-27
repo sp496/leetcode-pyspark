@@ -1122,7 +1122,23 @@ result_df.show()
 ### [1364. Number of Trusted Contacts of a Customer](https://www.jiakaobo.com/leetcode/1364.%20Number%20of%20Trusted%20Contacts%20of%20a%20Customer.html)
 
 ```python
+c_df.show()
 
+co_df = spark.read_table_as_df("contacts_1364")
+co_df.show()
+
+i_df = spark.read_table_as_df("invoices_1364")
+i_df.show()
+
+result_df = i_df.alias('i') \
+            .join(c_df.alias('c'), on=F.col('i.user_id')==F.col('c.customer_id'), how='left') \
+            .join(co_df.alias('co'), on=F.col('i.user_id')==F.col('co.user_id'), how='left') \
+            .join(c_df.alias('c1'), on=F.col('co.contact_email') == F.col('c1.email'), how='left') \
+            .groupby('i.invoice_id', 'c.customer_name', 'i.price').agg(F.count('co.user_id').alias('contacts_cnt'),
+                                       F.countDistinct('c1.email').alias('trusted_contacts_cnt')) \
+            .orderBy('invoice_id')
+
+result_df.show()
 ```
 
 ### [1393. Capital Gain/Loss](https://www.jiakaobo.com/leetcode/1393.%20Capital%20Gain%20Loss.html)
@@ -1143,6 +1159,28 @@ result_df.show()
 ### [1398. Customers Who Bought Products A and B but Not C](https://www.jiakaobo.com/leetcode/1398.%20Customers%20Who%20Bought%20Products%20A%20and%20B%20but%20Not%20C.html)
 
 ```python
+
+#solution 1
+from pyspark.sql import functions as F
+
+o_df = spark.read_table_as_df("orders_1398")
+o_df.show()
+
+c_df = spark.read_table_as_df("customers_1398")
+c_df.show()
+
+result_df = o_df \
+            .join(c_df, on='customer_id') \
+            .groupby('customer_id', 'customer_name') \
+            .agg(F.count(F.when(F.col('product_name')=='A', True)).alias('A_count'),
+                 F.count(F.when(F.col('product_name')=='B', True)).alias('B_count'),
+                 F.count(F.when(F.col('product_name')=='C', True)).alias('C_count')) \
+            .filter((F.col('A_count')>0) & (F.col('B_count')>0) & (F.col('C_count')==0)) \
+            .select('customer_id', 'customer_name')
+
+result_df.show()
+
+#solution 2
 from pyspark.sql import functions as F
 
 o_df = spark.read_table_as_df("orders_1398")
