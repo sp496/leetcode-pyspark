@@ -1221,7 +1221,17 @@ result_df.show()
 ### [1445. Apples & Oranges](https://www.jiakaobo.com/leetcode/1445.%20Apples%20&%20Oranges.html)
 
 ```python
+from pyspark.sql import functions as F
 
+s_df = spark.read_table_as_df("sales_1445")
+s_df.show()
+
+result_df = s_df \
+            .groupby('sale_date') \
+            .agg((F.count(F.when(F.col('fruit')=='apples', True)) - F.count(F.when(F.col('fruit')=='oranges', True))).alias('diff'))
+
+result_df.show()
+\
 ```
 
 ### [1454. Active Users](https://www.jiakaobo.com/leetcode/1454.%20Active%20Users.html)
