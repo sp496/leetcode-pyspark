@@ -1398,7 +1398,22 @@ result_df.show()
 ### [1555. Bank Account Summary](https://www.jiakaobo.com/leetcode/1555.%20Bank%20Account%20Summary.html)
 
 ```python
+from pyspark.sql import functions as F
 
+u_df = spark.read_table_as_df("users_1555")
+u_df.show()
+
+t_df = spark.read_table_as_df("transactions_1555")
+t_df.show()
+
+result_df = u_df \
+            .join(t_df, on=(F.col('user_id')==F.col('paid_by')) | (F.col('user_id')==F.col('paid_to')), how='left') \
+            .groupby('user_id', 'credit', 'user_name') \
+            .agg((F.sum(F.when(F.col('user_id') == F.col('paid_by'),
+                              -F.col('amount')).otherwise(F.col('amount'))) + F.col('credit')).alias('balance')) \
+            .withColumn('credit', F.when(F.col('balance').isNull(), F.col('credit')).otherwise(F.col('balance'))) \
+            .withColumn('credit_limit_breached', F.when(F.col('credit') < 0, 'Yes').otherwise('No')) \
+            .select('user_id', 'user_name', 'credit', 'credit_limit_breached')
 ```
 
 ### [1596. The Most Frequently Ordered Products for Each Customer](https://www.jiakaobo.com/leetcode/1596.%20The%20Most%20Frequently%20Ordered%20Products%20for%20Each%20Customer.html) 
