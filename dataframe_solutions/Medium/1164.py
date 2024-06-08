@@ -79,10 +79,12 @@ def solution_4(spark):
                 .withColumn('ranking', F.rank().over(wspec)) \
                 .filter(F.col('ranking') == 1)
 
+    ranked_prod_df.show()
+
     result_df = prod_df \
                 .select('product_id').distinct() \
                 .join(ranked_prod_df, on='product_id', how='left') \
-                .select(['product_id', F.ifnull(F.col('new_price'), F.lit(10)).alias('price')])
+                # .select(['product_id', F.ifnull(F.col('new_price'), F.lit(10)).alias('price')])
 
     result_df.show()
 

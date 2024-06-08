@@ -48,4 +48,4 @@ def solution_3(spark):
     result_df.show()
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_3)
+    spark_pg_utils.execute(solution_1)

@@ -661,7 +661,7 @@ result_df = events_df \
     .withColumn('avg_event_occurence', F.avg('occurences').over(wspec)) \
     .filter(F.col('occurences') > F.col('avg_event_occurence')) \
     .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
-    .filter(F.col('event_types') >= 2) \
+    .filter(F.col('event_types') > 1) \
     .select('business_id')
 
 result_df.show()
@@ -677,7 +677,7 @@ result_df = events_df \
     .join(events_df, on='event_type') \
     .filter(F.col('occurences') > F.col('avg_occurences')) \
     .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
-    .filter(F.col('event_types') >= 2) \
+    .filter(F.col('event_types') > 1) \
     .select('business_id')
 
 result_df.show()
@@ -1305,25 +1305,94 @@ result_df.show()
 ### [1468. Calculate Salaries](https://www.jiakaobo.com/leetcode/1468.%20Calculate%20Salaries.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+w_spec = W.partitionBy('company_id')
+
+s_df = spark.read_table_as_df("salaries_1468")
+s_df.show()
+
+result_df = s_df \
+    .withColumn('salary', F.when(F.max('salary').over(w_spec) < 1000, F.col('salary'))
+                            .when((F.max('salary').over(w_spec) >= 1000) & (F.max('salary').over(w_spec) <= 10000),
+                                  F.round(F.col('salary') - F.col('salary')*0.24, 0))
+                            .when(F.max('salary').over(w_spec) > 10000,
+                                  F.round(F.col('salary') - F.col('salary')*0.49, 0)))
+
+result_df.show()
 ```
 
 ### [1501. Countries You Can Safely Invest In](https://www.jiakaobo.com/leetcode/1501.%20Countries%20You%20Can%20Safely%20Invest%20In.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+p_df = spark.read_table_as_df("person_1501")
+p_df.show()
+
+ct_df = spark.read_table_as_df("country_1501")
+ct_df.show()
+
+c_df = spark.read_table_as_df("calls_1501")
+c_df.show()
+
+global_avg_duration = c_df.agg(F.avg("duration").alias("global_avg")).collect()[0]["global_avg"]
+
+print(global_avg_duration)
+result_df = c_df.select(F.col('caller_id').alias('caller'), 'duration') \
+            .unionAll(c_df.select(F.col('callee_id').alias('caller'), 'duration')) \
+            .join(p_df, on=F.col('caller') == F.col('id')) \
+            .join(ct_df.alias('ct'), on=F.substring(F.col('phone_number'),1, 3)==F.col('country_code')) \
+            .groupby('ct.name').agg(F.avg('duration').alias('avg')) \
+            .filter(F.col('avg') > global_avg_duration) \
+            .select(F.col('name').alias('country'))
+
+result_df.show()
 ```
 
 ### [1532. The Most Recent Three Orders](https://www.jiakaobo.com/leetcode/1532.%20The%20Most%20Recent%20Three%20Orders.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+c_df = spark.read_table_as_df("customers_1532")
+c_df.show()
+
+o_df = spark.read_table_as_df("orders_1532")
+o_df.show()
+
+w_spec = W.partitionBy('customer_id').orderBy(F.desc('order_date'))
+
+result_df = o_df \
+            .join(c_df, on='customer_id') \
+            .withColumn('rnk', F.rank().over(w_spec)) \
+            .filter(F.col('rnk') <= 3) \
+            .orderBy(F.asc('name'), F.asc('customer_id'), F.desc('order_date')) \
+            .select(F.col('name').alias('customer_name'), 'customer_id', 'order_id', 'order_date')
+
+result_df.show()
 ```
 
 ### [1549. The Most Recent Orders for Each Product](https://www.jiakaobo.com/leetcode/1549.%20The%20Most%20Recent%20Orders%20for%20Each%20Product.html)
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+w_spec = W.partitionBy('product_id').orderBy(F.desc('order_date'))
+
+o_df = spark.read_table_as_df("orders_1549")
+o_df.show()
+
+p_df = spark.read_table_as_df("products_1549")
+p_df.show()
+
+result_df = p_df \
+            .join(o_df, on='product_id') \
+            .withColumn('rnk', F.rank().over(w_spec)) \
+            .filter(F.col('rnk') == 1) \
+            .select('product_name', 'product_id', 'order_id', 'order_date')
+
+result_df.show()
 ```
 
 ### [1555. Bank Account Summary](https://www.jiakaobo.com/leetcode/1555.%20Bank%20Account%20Summary.html)

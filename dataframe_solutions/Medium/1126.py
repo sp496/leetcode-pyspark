@@ -14,7 +14,7 @@ def solution_1(spark):
         .withColumn('avg_event_occurence', F.avg('occurences').over(wspec)) \
         .filter(F.col('occurences') > F.col('avg_event_occurence')) \
         .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
-        .filter(F.col('event_types') >= 2) \
+        .filter(F.col('event_types') > 1) \
         .select('business_id')
 
     result_df.show()
@@ -32,7 +32,7 @@ def solution_2(spark):
         .join(events_df, on='event_type') \
         .filter(F.col('occurences') > F.col('avg_occurences')) \
         .groupby('business_id').agg(F.count('event_type').alias('event_types')) \
-        .filter(F.col('event_types') >= 2) \
+        .filter(F.col('event_types') > 1) \
         .select('business_id')
 
     result_df.show()
