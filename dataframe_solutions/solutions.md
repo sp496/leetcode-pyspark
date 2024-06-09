@@ -1450,7 +1450,17 @@ result_df.show()
 ### [1699. Number of Calls Between Two Persons](https://www.jiakaobo.com/leetcode/1699.%20Number%20of%20Calls%20Between%20Two%20Persons.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+c_df = spark.read_table_as_df("calls_1699")
+c_df.show()
+
+result_df = c_df \
+            .groupby(F.least('from_id', 'to_id').alias('person1'),
+                     F.greatest('from_id', 'to_id').alias('person2')) \
+            .agg(F.count('*').alias('call_count'), F.sum('duration').alias('total_duration'))
+
+result_df.show()
 ```
 
 ### [1709. Biggest Window Between Visits](https://www.jiakaobo.com/leetcode/1709.%20Biggest%20Window%20Between%20Visits.html) 
