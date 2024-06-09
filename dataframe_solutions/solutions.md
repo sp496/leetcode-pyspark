@@ -1502,7 +1502,18 @@ result_df.show()
 ### [1747. Leetflex Banned Accounts](https://www.jiakaobo.com/leetcode/1747.%20Leetflex%20Banned%20Accounts.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+l_df = spark.read_table_as_df("log_info_1747")
+l_df.show()
+
+result_df = l_df.alias('l1') \
+            .join(l_df.alias('l2'), on=(F.col('l1.account_id') == F.col('l2.account_id'))
+                                        & (F.col('l1.ip_address') != F.col('l2.ip_address'))
+                                        & (F.col('l2.login').between(F.col('l1.login'), F.col('l1.logout')))) \
+            .select('account_id')
+
+result_df.show()
 ```
 
 ### [1783. Grand Slam Titles](https://www.jiakaobo.com/leetcode/1783.%20Grand%20Slam%20Titles.html) 
