@@ -922,6 +922,27 @@ t_df.show()
 
 m_df = spark.read_table_as_df("matches_1212")
 m_df.show()
+win = (((F.col('team_id') == F.col('host_team')) & (F.col('host_goals') > F.col('guest_goals')))
+       | ((F.col('team_id') == F.col('guest_team')) & (F.col('guest_goals') > F.col('host_goals'))))
+draw = (F.col('host_goals') == F.col('guest_goals'))
+
+result_df = t_df.alias('t') \
+            .join(m_df.alias('m'), on=(F.col('t.team_id')==F.col('m.host_team')) |
+                                      (F.col('t.team_id')==F.col('m.guest_team')), how='left') \
+            .groupby('team_id', 'team_name') \
+            .agg(F.sum(F.when(win, 3).when(draw, 1).otherwise(0)).alias('num_points')) \
+            .orderBy(F.desc('num_points'), F.asc('team_name'))
+
+result_df.show()
+
+#solution 2
+import pyspark.sql.functions as F
+
+t_df = spark.read_table_as_df("teams_1212")
+t_df.show()
+
+m_df = spark.read_table_as_df("matches_1212")
+m_df.show()
 
 result_df = t_df.alias('t') \
             .join(m_df.alias('m'), on=(F.col('t.team_id')==F.col('m.host_team')) |
@@ -937,7 +958,7 @@ result_df = t_df.alias('t') \
 
 result_df.show()
 
-#solution 2
+#solution 3
 import pyspark.sql.functions as F
 
 t_df = spark.read_table_as_df("teams_1212")
@@ -1567,6 +1588,39 @@ result_df.show()
 ### [1841. League Statistics](https://www.jiakaobo.com/leetcode/1841.%20League%20Statistics.html) 
 
 ```python
+from pyspark.sql import functions as F
+
+t_df = spark.read_table_as_df("teams_1841")
+t_df.show()
+
+m_df = spark.read_table_as_df("matches_1841")
+m_df.show()
+
+is_home_team = (F.col('team_id') == F.col('home_team_id'))
+is_away_team = (F.col('team_id') == F.col('away_team_id'))
+
+win = ((is_home_team & (F.col('home_team_goals') > F.col('away_team_goals')))
+        | (is_away_team & (F.col('away_team_goals') > F.col('home_team_goals'))))
+draw = (F.col('home_team_goals') == F.col('away_team_goals'))
+
+
+
+result_df = t_df \
+            .join(m_df, on=(F.col('team_id') == F.col('home_team_id'))
+                            | (F.col('team_id') == F.col('away_team_id'))) \
+            .groupby('team_name') \
+            .agg(F.count('*').alias('matches_played'),
+                 F.sum(F.when(win, 3).when(draw, 1).otherwise(0)).alias('points'),
+                 F.sum((F.when(is_home_team, F.col('home_team_goals'))
+                        .when(is_away_team, F.col('away_team_goals')))).alias('goal_for'),
+                 F.sum((F.when(is_home_team, F.col('away_team_goals'))
+                        .when(is_away_team, F.col('home_team_goals')))).alias('goal_against'),
+                 ) \
+            .withColumn('goal_diff', F.col('goal_for') - F.col('goal_against')) \
+            .orderBy(F.desc('goal_diff'))
+
+
+result_df.show()
 
 ```
 
