@@ -1728,7 +1728,23 @@ result_df.show()
 ### [1907. Count Salary Categories](https://www.jiakaobo.com/leetcode/1907.%20Count%20Salary%20Categories.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+a_df = spark.read_table_as_df("accounts_1907")
+a_df.show()
+
+c_df = spark.spark.createDataFrame([("Low Salary",), ("Average Salary",), ("High Salary",)], ["category"])
+
+c_df.show()
+
+result_df = a_df \
+            .withColumn('category', (F.when(F.col('income') < 20000, 'Low Salary')
+                         .when(F.col('income').between(20000, 50000), 'Average Salary')
+                         .when(F.col('income') > 50000, 'High Salary'))) \
+            .join(c_df, on='category', how='right') \
+            .groupby('category').agg(F.count('account_id').alias('accounts_count'))
+
+result_df.show()
 ```
 
 ### [1934. Confirmation Rate](https://www.jiakaobo.com/leetcode/1934.%20Confirmation%20Rate.html) 
