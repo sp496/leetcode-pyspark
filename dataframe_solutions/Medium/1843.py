@@ -24,7 +24,6 @@ def solution_1(spark):
                 .filter(F.col('consecutive_months') >= 2) \
                 .select('account_id').dropDuplicates()
 
-
     result_df.show()
 
 
@@ -50,7 +49,6 @@ def solution_2(spark):
                                     on=(F.col('d1.account_id')==F.col('d2.account_id'))
                                         & (F.col('d2.month') == F.add_months(F.col('d1.month'), 1))) \
                 .select('d1.account_id').dropDuplicates()
-
 
     result_df.show()
 
