@@ -46,7 +46,6 @@ def solution_2(spark):
         .join(a_df, on='account_id') \
         .filter(F.col('spent') > F.col('max_income')) \
 
-
     result_df = df.alias('d1').join(df.alias('d2'),
                                     on=(F.col('d1.account_id')==F.col('d2.account_id'))
                                         & (F.col('d2.month') == F.add_months(F.col('d1.month'), 1))) \
