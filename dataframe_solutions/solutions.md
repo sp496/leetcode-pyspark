@@ -1682,7 +1682,23 @@ result_df.show()
 ### [1867. Orders With Maximum Quantity Above Average](https://www.jiakaobo.com/leetcode/1867.%20Orders%20With%20Maximum%20Quantity%20Above%20Average.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+o_df = spark.read_table_as_df("orders_details_1867")
+o_df.show()
+
+aggregated_df = o_df.groupby('order_id') \
+                .agg((F.sum('quantity') / F.countDistinct('product_id')).alias('average_quantity'),
+                        F.max('quantity').alias('max_quantity'))
+
+max_avg_quantity = aggregated_df \
+                    .select(F.max('average_quantity').alias('max_avg_quantity')).collect()[0]['max_avg_quantity']
+
+result_df = aggregated_df \
+            .filter(F.col('max_quantity') > max_avg_quantity) \
+            .select('order_id')
+
+result_df.show()
 ```
 
 ### [1875. Group Employees of the Same Salary](https://www.jiakaobo.com/leetcode/1875.%20Group%20Employees%20of%20the%20Same%20Salary.html) 
