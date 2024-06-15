@@ -1704,7 +1704,25 @@ result_df.show()
 ### [1875. Group Employees of the Same Salary](https://www.jiakaobo.com/leetcode/1875.%20Group%20Employees%20of%20the%20Same%20Salary.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+e_df = spark.read_table_as_df("employees_1875")
+e_df.show()
+
+e_agg_df = e_df \
+        .groupby('salary').agg(F.count('*').alias('salary_count')) \
+        .filter(F.count('*') > 1)
+
+e_agg_df.show()
+
+w_spec = W.orderBy('salary')
+
+result_df = e_df \
+            .join(e_agg_df, on='salary', how='semi') \
+            .withColumn('team_id', F.dense_rank().over(w_spec)) \
+            .select('employee_id', 'name', 'salary', 'team_id')
+
+result_df.show()
 ```
 
 ### [1907. Count Salary Categories](https://www.jiakaobo.com/leetcode/1907.%20Count%20Salary%20Categories.html) 
