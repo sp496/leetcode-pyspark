@@ -46,7 +46,7 @@ class SparkPgOps:
 
     def read_table_as_df(self, table):
         database_url = f"postgresql://{self.host}:{self.port}/{self.database_name}"
-        self.build_spark_session()
+        # self.build_spark_session()
         df = self.spark.read \
             .format("jdbc") \
             .option("driver", "org.postgresql.Driver") \
