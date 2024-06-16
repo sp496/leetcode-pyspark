@@ -8,10 +8,6 @@ def solution_1(spark):
     f_df = spark.read_table_as_df("friendship_1949")
     f_df.show()
 
-    """we are doing a self join f1.u2 = f2.u1. so any matches we get are mutual friends of f1.u1 and f1.u2.
-    but this is only accurate if the table has all possible friend combos. so if the table has an entry for 2,3
-    but no entry for 3,2 then you can't find mutual friends accurately, that's why we do the join"""
-
     f_df = f_df \
             .union(f_df.select(F.col('user2_id').alias('user1_id'), F.col('user1_id').alias('user2_id')))
 
