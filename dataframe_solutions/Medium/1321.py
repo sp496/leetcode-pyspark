@@ -15,10 +15,10 @@ def solution_1(spark):
                 .select('visited_on', F.sum('amount').over(wspec).alias('amount'),
                         F.round(F.avg('amount').over(wspec), 2).alias('average_amount'),
                         F.count('*').over(wspec).alias('count')) \
-                .filter(F.col('count') == 7)
+                .filter(F.col('count') == 7) \
+                .select('visited_on', 'amount', 'average_amount')
 
     result_df.show()
-
 
 
 if __name__ == '__main__':

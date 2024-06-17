@@ -1079,7 +1079,8 @@ result_df = c_df \
             .select('visited_on', F.sum('amount').over(wspec).alias('amount'),
                     F.round(F.avg('amount').over(wspec), 2).alias('average_amount'),
                     F.count('*').over(wspec).alias('count')) \
-            .filter(F.col('count') == 7)
+            .filter(F.col('count') == 7) \
+            .select('visited_on', 'amount', 'average_amount')
 
 result_df.show()
 ```
@@ -1820,7 +1821,19 @@ result_df = r_df.alias('r1') \
 ### [1988. Find Cutoff Score for Each School](https://www.jiakaobo.com/leetcode/1988.%20Find%20Cutoff%20Score%20for%20Each%20School.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+s_df = spark.read_table_as_df("school_1988")
+s_df.show()
+
+e_df = spark.read_table_as_df("exam_1988")
+e_df.show()
+
+result_df = s_df \
+            .join(e_df, on=F.col('capacity') > F.col('student_count'), how='left') \
+            .groupby('school_id').agg(F.ifnull(F.min('score'), F.lit(-1)).alias('score'))
+
+result_df.show()
 ```
 
 ### [1990. Count the Number of Experiments](https://www.jiakaobo.com/leetcode/1990.%20Count%20the%20Number%20of%20Experiments.html) 
