@@ -1924,7 +1924,28 @@ result_df.show()
 ### [2051. The Category of Each Member in the Store](https://www.jiakaobo.com/leetcode/2051.%20The%20Category%20of%20Each%20Member%20in%20the%20Store.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+m_df = spark.read_table_as_df("members_2051")
+m_df.show()
+
+v_df = spark.read_table_as_df("visits_2051")
+v_df.show()
+
+p_df = spark.read_table_as_df("purchases_2051")
+p_df.show()
+
+result_df = m_df \
+            .join(v_df, on='member_id', how='left') \
+            .join(p_df, on='visit_id', how='left') \
+            .groupby('member_id', 'name') \
+            .agg((100*F.count('charged_amount')/F.count('visit_id')).alias('conversion_rate')) \
+            .select('member_id', 'name', (F.when(F.col('conversion_rate') >= 80, 'Diamond')
+                                            .when(F.col('conversion_rate') >= 50, 'Gold')
+                                            .when(F.col('conversion_rate') < 50, 'Silver')
+                                            .otherwise('Bronze')).alias('category'))
+
+result_df.show()
 ```
 
 ### [2066. Account Balance](https://www.jiakaobo.com/leetcode/2066.%20Account%20Balance.html) 
