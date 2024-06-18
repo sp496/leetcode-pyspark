@@ -1861,7 +1861,21 @@ result_df.show()
 ### [1990. Count the Number of Experiments](https://www.jiakaobo.com/leetcode/1990.%20Count%20the%20Number%20of%20Experiments.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+e_df = spark.read_table_as_df("experiments_1990")
+e_df.show()
+
+cross_df = e_df.select('platform').distinct().crossJoin(e_df.select('experiment_name').distinct())
+
+result_df = cross_df.alias('c') \
+            .join(e_df.alias('e'), on=(F.col('c.platform') == F.col('e.platform'))
+                                        & (F.col('c.experiment_name') == F.col('e.experiment_name')), how='left') \
+            .groupby(F.col('c.platform'), F.col('c.experiment_name')) \
+             .agg(F.count('e.experiment_name').alias('num_experiments')) \
+            .orderBy('platform')
+
+    result_df.show()
 ```
 
 ### [2020. Number of Accounts That Did Not Stream](https://www.jiakaobo.com/leetcode/2020.%20Number%20of%20Accounts%20That%20Did%20Not%20Stream.html) 
