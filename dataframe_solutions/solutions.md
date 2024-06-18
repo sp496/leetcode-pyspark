@@ -1951,7 +1951,35 @@ result_df.show()
 ### [2066. Account Balance](https://www.jiakaobo.com/leetcode/2066.%20Account%20Balance.html) 
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
 
+t_df = spark.read_table_as_df("transactions_2066")
+t_df.show()
+
+w_spec = W.partitionBy('account_id').orderBy('day')
+
+result_df = t_df \
+            .withColumn('balance',  F.sum(F.when(F.col('type') == 'Withdraw', -F.col('amount'))
+                                          .otherwise(F.col('amount'))).over(w_spec)) \
+            .select('account_id', 'day', 'balance')
+
+result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F, Window as W
+
+t_df = spark.read_table_as_df("transactions_2066")
+t_df.show()
+
+w_spec = W.partitionBy('account_id').orderBy('day')
+
+result_df = t_df \
+            .withColumn('amount', F.when(F.col('type') == 'Withdraw', -F.col('amount')).otherwise(F.col('amount')))\
+            .withColumn('balance',  F.sum('amount').over(w_spec)) \
+            .select('account_id', 'day', 'balance')
+
+result_df.show()
 ```
 
 ### [2084. Drop Type 1 Orders for Customers With Type 0 Orders](https://www.jiakaobo.com/leetcode/2084.%20Drop%20Type%201%20Orders%20for%20Customers%20With%20Type%200%20Orders.html) 
