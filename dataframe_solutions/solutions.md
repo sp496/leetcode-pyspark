@@ -1903,7 +1903,22 @@ result_df.show()
 ### [2041. Accepted Candidates From the Interviews](https://www.jiakaobo.com/leetcode/2041.%20Accepted%20Candidates%20From%20the%20Interviews.html) 
 
 ```python
+from pyspark.sql import functions as F
 
+c_df = spark.read_table_as_df("candidates_2041")
+c_df.show()
+
+r_df = spark.read_table_as_df("rounds_2041")
+r_df.show()
+
+result_df = c_df \
+            .filter(F.col('years_of_exp') >= 2) \
+            .join(r_df, on='interview_id') \
+            .groupby('candidate_id').agg(F.sum('score').alias('total_score')) \
+            .filter(F.col('total_score') > 15) \
+            .select('candidate_id')
+
+result_df.show()
 ```
 
 ### [2051. The Category of Each Member in the Store](https://www.jiakaobo.com/leetcode/2051.%20The%20Category%20of%20Each%20Member%20in%20the%20Store.html) 
