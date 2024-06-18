@@ -1441,6 +1441,28 @@ result_df = u_df \
 ### [1596. The Most Frequently Ordered Products for Each Customer](https://www.jiakaobo.com/leetcode/1596.%20The%20Most%20Frequently%20Ordered%20Products%20for%20Each%20Customer.html) 
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
+
+w_spec = W.partitionBy('customer_id').orderBy(F.desc(F.count('*')))
+
+o_df = spark.read_table_as_df("orders_1596")
+o_df.show()
+
+p_df = spark.read_table_as_df("products_1596")
+p_df.show()
+
+result_df = o_df \
+            .groupBy('customer_id', 'product_id') \
+            .agg((F.rank().over(w_spec)).alias('rank')) \
+            .filter(F.col('rank') == 1) \
+            .join(p_df, on='product_id') \
+            .select('customer_id', 'product_id', 'product_name') \
+            .orderBy('customer_id')
+
+result_df.show()
+
+#solution 2
 from pyspark.sql import functions as F, Window as W
 
 w_spec = W.partitionBy('customer_id').orderBy(F.desc('prod_count'))
