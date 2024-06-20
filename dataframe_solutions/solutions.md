@@ -1761,9 +1761,9 @@ c_df = spark.spark.createDataFrame([("Low Salary",), ("Average Salary",), ("High
 c_df.show()
 
 result_df = a_df \
-            .withColumn('category', (F.when(F.col('income') < 20000, 'Low Salary')
-                         .when(F.col('income').between(20000, 50000), 'Average Salary')
-                         .when(F.col('income') > 50000, 'High Salary'))) \
+            .withColumn('category', F.when(F.col('income') > 50000, 'High Salary') \
+                                    .when(F.col('income') >= 20000, 'Average Salary') \
+                                    .otherwise('Low Salary')) \
             .join(c_df, on='category', how='right') \
             .groupby('category').agg(F.count('account_id').alias('accounts_count'))
 
