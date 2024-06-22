@@ -2060,7 +2060,24 @@ result_df.show()
 ### [2159. Order Two Columns Independently](https://www.jiakaobo.com/leetcode/2159.%20Order%20Two%20Columns%20Independently.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+d_df = spark.read_table_as_df("data_2159")
+d_df.show()
+
+d1_df = d_df \
+        .select('first_col') \
+        .withColumn('order', F.row_number().over(W.orderBy('first_col')))
+
+d2_df = d_df \
+        .select('second_col') \
+        .withColumn('order', F.row_number().over(W.orderBy(F.desc('second_col'))))
+
+result_df = d1_df \
+            .join(d2_df, on='order') \
+            .select('first_col', 'second_col')
+
+result_df.show()
 ```
 
 ### [2175. The Change in Global Rankings](https://www.jiakaobo.com/leetcode/2175.%20The%20Change%20in%20Global%20Rankings.html) 
