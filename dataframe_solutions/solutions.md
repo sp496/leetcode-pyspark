@@ -1663,7 +1663,7 @@ w_spec = W.partitionBy('account_id').orderBy('month')
 
 result_df = t_df \
             .groupby('account_id', F.date_format('day', 'yyyy-MM').alias('month')) \
-            .agg(F.sum('amount').alias('spent')) \
+            .agg(F.sum(F.when(F.col('type')=='Creditor', F.col('amount')).otherwise(0)).alias('spent')) \
             .join(a_df, on='account_id') \
             .filter(F.col('spent') > F.col('max_income')) \
             .withColumn('rank', F.row_number().over(w_spec)) \
