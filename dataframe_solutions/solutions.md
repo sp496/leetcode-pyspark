@@ -1985,7 +1985,34 @@ result_df.show()
 ### [2084. Drop Type 1 Orders for Customers With Type 0 Orders](https://www.jiakaobo.com/leetcode/2084.%20Drop%20Type%201%20Orders%20for%20Customers%20With%20Type%200%20Orders.html) 
 
 ```python
+#solution 1
+from pyspark.sql import functions as F
 
+o_df = spark.read_table_as_df("orders_2084")
+o_df.show()
+
+result_df = o_df.alias('o1') \
+            .join(o_df.alias('o2'), on=(F.col('o1.customer_id') == F.col('o2.customer_id'))
+                                    & (F.col('o1.order_type') != F.col('o2.order_type')), how='left') \
+            .filter((F.col('o2.order_type').isNull()) | (F.col('o2.order_type') == 1)) \
+            .select('o1.order_id', 'o1.customer_id', 'o1.order_type')
+
+result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F
+
+o_df = spark.read_table_as_df("orders_2084")
+o_df.show()
+
+result_df = o_df.alias('o1') \
+            .groupby('customer_id') \
+            .agg(F.min('order_type').alias('min_order')) \
+            .join(o_df.alias('o2'), on=(F.col('o1.customer_id')==F.col('o2.customer_id'))
+                                        & (F.col('min_order')==F.col('o2.order_type'))) \
+            .select('o2.order_id', 'o2.customer_id', 'o2.order_type')
+
+result_df.show()
 ```
 
 ### [2112. The Airport With the Most Traffic](https://www.jiakaobo.com/leetcode/2112.%20The%20Airport%20With%20the%20Most%20Traffic.html) 
