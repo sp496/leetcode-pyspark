@@ -1347,7 +1347,32 @@ result_df.show()
 ### [1501. Countries You Can Safely Invest In](https://www.jiakaobo.com/leetcode/1501.%20Countries%20You%20Can%20Safely%20Invest%20In.html)
 
 ```python
-from pyspark.sql import functions as F, Window as W
+#solution 1
+from pyspark.sql import functions as F
+
+p_df = spark.read_table_as_df("person_1501")
+p_df.show()
+
+ct_df = spark.read_table_as_df("country_1501")
+ct_df.show()
+
+c_df = spark.read_table_as_df("calls_1501")
+c_df.show()
+
+global_avg_duration = c_df.agg(F.avg("duration").alias("global_avg")).collect()[0]["global_avg"]
+print(global_avg_duration)
+
+result_df = ct_df.alias('ct') \
+            .join(p_df.alias('p'), on=F.col('country_code')==F.substring(F.col('phone_number'),1, 3)) \
+            .join(c_df.alias('c'), on=(F.col('caller_id')==F.col('p.id')) | (F.col('callee_id')==F.col('p.id'))) \
+            .groupby('ct.name').agg(F.avg('duration').alias('total_duration')) \
+            .filter(F.col('total_duration') > global_avg_duration) \
+            .select(F.col('name').alias('country'))
+
+result_df.show()
+
+#solution 2
+from pyspark.sql import functions as F
 
 p_df = spark.read_table_as_df("person_1501")
 p_df.show()
