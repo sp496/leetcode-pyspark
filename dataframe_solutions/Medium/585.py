@@ -16,7 +16,6 @@ def solution_1(spark):
     result_df.show()
 
 
-
 def solution_2(spark):
 
     import pyspark.sql.functions as F
@@ -32,6 +31,7 @@ def solution_2(spark):
         .agg(F.sum(F.col('i1.tiv_2016')).alias('tiv_2016'))
 
     result_df.show()
+
 
 def solution_3(spark):
     import pyspark.sql.functions as F

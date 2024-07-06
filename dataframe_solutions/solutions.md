@@ -2108,7 +2108,42 @@ result_df.show()
 ### [2175. The Change in Global Rankings](https://www.jiakaobo.com/leetcode/2175.%20The%20Change%20in%20Global%20Rankings.html) 
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
 
+t_df = spark.read_table_as_df("team_points_2175")
+t_df.show()
+
+p_df = spark.read_table_as_df("points_change_2175")
+p_df.show()
+
+a_df = t_df \
+        .join(p_df, on='team_id') \
+        .withColumn('rank_diff', F.row_number().over(W.orderBy(F.desc('points'), F.asc('name'))) -
+                                F.row_number().over(W.orderBy(F.desc(F.col('points') + F.col('points_change')),
+                                                              F.asc('name')))) \
+        .select('team_id', 'name', 'rank_diff')
+
+a_df.show()
+
+#solution 2
+from pyspark.sql import functions as F, Window as W
+
+t_df = spark.read_table_as_df("team_points_2175")
+t_df.show()
+
+p_df = spark.read_table_as_df("points_change_2175")
+p_df.show()
+
+a_df = t_df \
+        .withColumn('rank1', F.row_number().over(W.orderBy(F.desc('points'), F.asc('name')))) \
+        .join(p_df, on='team_id') \
+        .withColumn('points', F.col('points') + F.col('points_change')) \
+        .withColumn('rank2', F.row_number().over(W.orderBy(F.desc('points'), F.asc('name')))) \
+        .withColumn('rank_diff', F.col('rank2') - F.col('rank1')) \
+        .select('team_id', 'name', 'rank_diff')
+
+a_df.show()
 ```
 
 ### [2228. Users With Two Purchases Within Seven Days](https://www.jiakaobo.com/leetcode/2228.%20Users%20With%20Two%20Purchases%20Within%20Seven%20Days.html) 
