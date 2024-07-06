@@ -2149,7 +2149,20 @@ a_df.show()
 ### [2228. Users With Two Purchases Within Seven Days](https://www.jiakaobo.com/leetcode/2228.%20Users%20With%20Two%20Purchases%20Within%20Seven%20Days.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+p_df = spark.read_table_as_df("purchases_2228")
+p_df.show()
+
+w_spec = W.partitionBy('user_id').orderBy('purchase_date')
+
+result_df = p_df \
+            .withColumn('days_since_last_purchase', (F.col('purchase_date') - F.lag('purchase_date').over(w_spec))
+                                                    .cast('int')) \
+            .filter(F.col('days_since_last_purchase') <= 7) \
+            .select('user_id').distinct()
+
+result_df.show()
 ```
 
 ### [2238. Number of Times a Driver Was a Passenger](https://www.jiakaobo.com/leetcode/2238.%20Number%20of%20Times%20a%20Driver%20Was%20a%20Passenger.html)
