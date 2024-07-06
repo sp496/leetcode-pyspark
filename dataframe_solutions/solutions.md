@@ -2168,7 +2168,16 @@ result_df.show()
 ### [2238. Number of Times a Driver Was a Passenger](https://www.jiakaobo.com/leetcode/2238.%20Number%20of%20Times%20a%20Driver%20Was%20a%20Passenger.html)
 
 ```python
+from pyspark.sql import functions as F
 
+r_df = spark.read_table_as_df("rides_2238")
+r_df.show()
+
+result_df = r_df.alias('r1') \
+            .join(r_df.alias('r2'), on=F.col('r1.driver_id')==F.col('r2.passenger_id'), how='left') \
+            .groupby('r1.driver_id').agg(F.countDistinct('r2.ride_id').alias('cnt'))
+
+result_df.show()
 ```
 
 ### [2292. Products With Three or More Orders in Two Consecutive Years](https://www.jiakaobo.com/leetcode/2292.%20Products%20With%20Three%20or%20More%20Orders%20in%20Two%20Consecutive%20Years.html) 
