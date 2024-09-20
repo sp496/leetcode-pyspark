@@ -2149,6 +2149,24 @@ a_df.show()
 ### [2228. Users With Two Purchases Within Seven Days](https://www.jiakaobo.com/leetcode/2228.%20Users%20With%20Two%20Purchases%20Within%20Seven%20Days.html) 
 
 ```python
+
+#solution 1
+from pyspark.sql import functions as F, Window as W
+
+p_df = spark.read_table_as_df("purchases_2228")
+p_df.show()
+
+result_df = p_df.alias('p1') \
+            .join(p_df.alias('p2'), on=(F.col('p1.user_id') == F.col('p2.user_id'))
+                                        & (F.col('p1.purchase_id') != F.col('p2.purchase_id'))
+                                        & (F.datediff(F.col('p2.purchase_date'), F.col('p1.purchase_date')) <= 7)) \
+            .select(F.col('p1.user_id')).distinct()
+
+result_df.show()
+```
+
+```python
+#solution 2
 from pyspark.sql import functions as F, Window as W
 
 p_df = spark.read_table_as_df("purchases_2228")
