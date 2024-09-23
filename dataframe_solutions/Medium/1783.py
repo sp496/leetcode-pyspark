@@ -15,10 +15,11 @@ def solution_1(spark):
                 .join(c_df, on=(F.col('player_id') == F.col('Wimbledon')) | (F.col('player_id') == F.col('Fr_open'))
                                 | (F.col('player_id') == F.col('US_open')) | (F.col('player_id') == F.col('Au_open'))) \
                 .groupby('player_id', 'player_name') \
-                .agg((F.sum(F.when(F.col('player_id') == F.col('wimbledon'), 1).otherwise(0))
-                        + F.sum(F.when(F.col('player_id') == F.col('fr_open'), 1).otherwise(0))
-                        + F.sum(F.when(F.col('player_id') == F.col('us_open'), 1).otherwise(0))
-                        + F.sum(F.when(F.col('player_id') == F.col('au_open'), 1).otherwise(0))).alias('grand_slams_count'))
+                .agg((F.sum(F.when(F.col('player_id') == F.col('wimbledon'), 1).otherwise(0)
+                            + F.when(F.col('player_id') == F.col('fr_open'), 1).otherwise(0)
+                            + F.when(F.col('player_id') == F.col('us_open'), 1).otherwise(0)
+                            + F.when(F.col('player_id') == F.col('au_open'), 1).otherwise(0)))
+                     .alias('grand_slams_count'))
 
     result_df.show()
 
