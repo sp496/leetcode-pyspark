@@ -338,6 +338,24 @@ result_df = req_df.select([F.col('requester_id').alias('id'), F.col('accepter_id
     .limit(1)
 
 result_df.show()
+
+#solution 2
+
+from pyspark.sql import functions as F, Window as W
+
+req_df = spark.read_table_as_df("request_accepted_602")
+req_df.show()
+
+w_spec = W.orderBy(F.desc('num'))
+
+result_df = req_df.select([F.col('requester_id').alias('id'), F.col('accepter_id').alias('friend_id')]) \
+    .union(req_df.select([F.col('accepter_id').alias('id'), F.col('requester_id').alias('friend_id')])) \
+    .groupby('id').agg(F.count('friend_id').alias('num')) \
+    .withColumn('rnk', F.rank().over(w_spec)) \
+    .filter(F.col('rnk') == 1) \
+    .select('id', 'num')
+
+result_df.show()
 ```
 
 ### [608. Tree Node](https://www.jiakaobo.com/leetcode/608.%20Tree%20Node.html) 
