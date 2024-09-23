@@ -1785,6 +1785,25 @@ result_df.show()
 ### [1875. Group Employees of the Same Salary](https://www.jiakaobo.com/leetcode/1875.%20Group%20Employees%20of%20the%20Same%20Salary.html) 
 
 ```python
+#solution 1
+from pyspark.sql import functions as F, Window as W
+
+e_df = spark.read_table_as_df("employees_1875")
+e_df.show()
+
+w_spec = W.orderBy('salary')
+
+result_df = e_df.alias('e1') \
+            .join(e_df.alias('e2'), on=(F.col('e1.salary') == F.col('e2.salary'))
+                                        & (F.col('e1.employee_id') != F.col('e2.employee_id')), how='semi') \
+            .withColumn('team_id', F.dense_rank().over(w_spec)) \
+            .orderBy('team_id', 'employee_id')
+
+
+result_df.show()
+
+
+#solution 2
 from pyspark.sql import functions as F, Window as W
 
 e_df = spark.read_table_as_df("employees_1875")
