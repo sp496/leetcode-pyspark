@@ -576,6 +576,24 @@ books_df.show()
 orders_df = spark.read_table_as_df("orders_1098")
 orders_df.show()
 
+result_df = books_df.alias('b') \
+    .join(orders_df.alias('o'), on=(F.col('o.book_id') == F.col('b.book_id'))
+                                   & (F.col('o.dispatch_date') > F.to_date(F.lit('2018-06-23'))), how='left') \
+    .filter(F.col('b.available_from') < F.to_date(F.lit('2019-05-23'))) \
+    .groupby([F.col('b.book_id'), 'name']).agg(F.sum('quantity')) \
+    .select(['book_id', 'name'])
+
+result_df.show()
+
+#solution_3
+import pyspark.sql.functions as F
+
+books_df = spark.read_table_as_df("books_1098")
+books_df.show()
+
+orders_df = spark.read_table_as_df("orders_1098")
+orders_df.show()
+
 books_df = books_df.filter((F.col('available_from') < F.date_sub(F.to_date(F.lit('2019-06-23')), 30)))
 
 in_the_past_year = (F.col('o.dispatch_date') > F.date_sub(F.to_date(F.lit('2019-06-23')), 365))
