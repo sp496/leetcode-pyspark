@@ -11,7 +11,7 @@ def solution_1(spark):
     w_spec = W.partitionBy(F.date_format('day', 'yyyy-MM-dd')).orderBy(F.desc('amount'))
 
     result_df = t_df \
-                .withColumn('rnk', F.dense_rank().over(w_spec)) \
+                .withColumn('rnk', F.rank().over(w_spec)) \
                 .filter(F.col('rnk') == 1) \
                 .select('transactions_id') \
                 .orderBy('transactions_id')
