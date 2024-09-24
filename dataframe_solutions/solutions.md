@@ -325,6 +325,9 @@ result_df.show()
 ### [602. Friend Requests II: Who Has the Most Friends](https://www.jiakaobo.com/leetcode/602.%20Friend%20Requests%20II:%20Who%20Has%20the%20Most%20Friends.html)
 
 ```python
+
+#solution 1
+
 import pyspark.sql.functions as F
 
 req_df = spark.read_table_as_df("request_accepted_602")
@@ -1727,6 +1730,31 @@ result_df.show()
 
 ```python
 #solution 1
+
+from pyspark.sql import functions as F, Window as W
+
+t_df = spark.read_table_as_df("transactions_1843")
+t_df.show()
+
+a_df = spark.read_table_as_df("accounts_1843")
+a_df.show()
+
+df = t_df \
+    .groupby('account_id', F.date_format('day', 'yyyy-MM').alias('month')) \
+    .agg(F.sum('amount').alias('spent')) \
+    .join(a_df, on='account_id') \
+    .filter(F.col('spent') > F.col('max_income')) \
+
+result_df = df.alias('d1').join(df.alias('d2'),
+                                on=(F.col('d1.account_id')==F.col('d2.account_id'))
+                                    & (F.col('d2.month') == F.add_months(F.col('d1.month'), 1))) \
+            .select('d1.account_id').dropDuplicates()
+
+result_df.show()
+```
+
+```python
+#solution 2
 from pyspark.sql import functions as F, Window as W
 
 t_df = spark.read_table_as_df("transactions_1843")
@@ -1749,33 +1777,6 @@ result_df = t_df \
             .select('account_id').dropDuplicates()
 
 result_df.show()
-
-#solution 2
-#interesting for 2 or more. You just need to prove 2, so no need to know exactly how many consecutive
-#just do one join for identifying 2
-
-from pyspark.sql import functions as F, Window as W
-
-t_df = spark.read_table_as_df("transactions_1843")
-t_df.show()
-
-a_df = spark.read_table_as_df("accounts_1843")
-a_df.show()
-
-df = t_df \
-    .groupby('account_id', F.date_format('day', 'yyyy-MM').alias('month')) \
-    .agg(F.sum('amount').alias('spent')) \
-    .join(a_df, on='account_id') \
-    .filter(F.col('spent') > F.col('max_income')) \
-
-result_df = df.alias('d1').join(df.alias('d2'),
-                                on=(F.col('d1.account_id')==F.col('d2.account_id'))
-                                    & (F.col('d2.month') == F.add_months(F.col('d1.month'), 1))) \
-            .select('d1.account_id').dropDuplicates()
-
-
-result_df.show()
-
 ```
 
 ### [1867. Orders With Maximum Quantity Above Average](https://www.jiakaobo.com/leetcode/1867.%20Orders%20With%20Maximum%20Quantity%20Above%20Average.html) 
