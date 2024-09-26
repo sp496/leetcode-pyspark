@@ -16,8 +16,7 @@ def solution_1(spark):
     result_df = l_df \
         .dropDuplicates() \
         .withColumn('rnk', F.row_number().over(wspec)) \
-        .withColumn('prev_date', F.col('login_date') - F.col('rnk')) \
-        .groupby('id', 'prev_date').agg(F.count('*').alias('consecutive_logins')) \
+        .groupby('id', F.col('login_date') - F.col('rnk')).agg(F.count('*').alias('consecutive_logins')) \
         .filter(F.col('consecutive_logins') >= 5) \
         .join(a_df, on='id') \
         .select('id', 'name')

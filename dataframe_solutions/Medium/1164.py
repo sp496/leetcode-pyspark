@@ -84,10 +84,10 @@ def solution_4(spark):
     result_df = prod_df \
                 .select('product_id').distinct() \
                 .join(ranked_prod_df, on='product_id', how='left') \
-                # .select(['product_id', F.ifnull(F.col('new_price'), F.lit(10)).alias('price')])
+                .select(['product_id', F.ifnull(F.col('new_price'), F.lit(10)).alias('price')])
 
     result_df.show()
 
 
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_4)
+    spark_pg_utils.execute(solution_1)

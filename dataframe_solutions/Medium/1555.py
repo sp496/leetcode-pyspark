@@ -16,7 +16,7 @@ def solution_1(spark):
                 .groupby('user_id', 'credit', 'user_name') \
                 .agg((F.sum(F.when(F.col('user_id') == F.col('paid_by'),
                                   -F.col('amount')).otherwise(F.col('amount'))) + F.col('credit')).alias('balance')) \
-                .withColumn('credit', F.when(F.col('balance').isNull(), F.col('credit')).otherwise(F.col('balance'))) \
+                .withColumn('credit', F.ifnull(F.col('balance'), F.col('credit'))) \
                 .withColumn('credit_limit_breached', F.when(F.col('credit') < 0, 'Yes').otherwise('No')) \
                 .select('user_id', 'user_name', 'credit', 'credit_limit_breached')
 

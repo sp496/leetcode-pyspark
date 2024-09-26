@@ -761,6 +761,26 @@ result_df.show()
 ### [1158. Market Analysis I](https://www.jiakaobo.com/leetcode/1158.%20Market%20Analysis%20I.html)
 
 ```python
+#solution 1
+import pyspark.sql.functions as F
+
+o_df = spark.read_table_as_df("orders_1158")
+o_df.show()
+
+u_df = spark.read_table_as_df("users_1158")
+u_df.show()
+
+result_df = u_df \
+    .join(o_df, on=(F.col('user_id') == F.col('buyer_id'))
+                   & (F.date_format('order_date', 'yyyy') == '2019'), how='left') \
+    .groupby(['user_id', 'join_date']) \
+    .agg(F.count('order_id').alias('orders_in_2019'))
+
+result_df.show()
+```
+
+```python
+#solution 2
 import pyspark.sql.functions as F
 
 o_df = spark.read_table_as_df("orders_1158")
@@ -1298,27 +1318,28 @@ result_df.show()
 
 ```python
 #solution 1
-    from pyspark.sql import functions as F, Window as W
+from pyspark.sql import functions as F, Window as W
 
-    a_df = spark.read_table_as_df("accounts_1454")
-    a_df.show()
+a_df = spark.read_table_as_df("accounts_1454")
+a_df.show()
 
-    l_df = spark.read_table_as_df("logins_1454")
-    l_df.show()
+l_df = spark.read_table_as_df("logins_1454")
+l_df.show()
 
-    wspec = W.partitionBy('id').orderBy('login_date')
+wspec = W.partitionBy('id').orderBy('login_date')
 
-    result_df = l_df \
-        .dropDuplicates() \
-        .withColumn('rnk', F.row_number().over(wspec)) \
-        .withColumn('prev_date', F.col('login_date') - F.col('rnk')) \
-        .groupby('id', 'prev_date').agg(F.count('*').alias('consecutive_logins')) \
-        .filter(F.col('consecutive_logins') >= 5) \
-        .join(a_df, on='id') \
-        .select('id', 'name')
+result_df = l_df \
+    .dropDuplicates() \
+    .withColumn('rnk', F.row_number().over(wspec)) \
+    .groupby('id', F.col('login_date') - F.col('rnk')).agg(F.count('*').alias('consecutive_logins')) \
+    .filter(F.col('consecutive_logins') >= 5) \
+    .join(a_df, on='id') \
+    .select('id', 'name')
 
-    result_df.show()
-    
+result_df.show()
+```
+
+```python
 #solution 2
 from pyspark.sql import functions as F, Window as W
 
@@ -1340,7 +1361,6 @@ result_df = l_df \
         .select('id', 'name')
 
 result_df.show()
-
 ```
 
 ### [1459. Rectangles Area](https://www.jiakaobo.com/leetcode/1459.%20Rectangles%20Area.html)
@@ -1373,11 +1393,11 @@ s_df = spark.read_table_as_df("salaries_1468")
 s_df.show()
 
 result_df = s_df \
-    .withColumn('salary', F.when(F.max('salary').over(w_spec) < 1000, F.col('salary'))
-                            .when((F.max('salary').over(w_spec) >= 1000) & (F.max('salary').over(w_spec) <= 10000),
-                                  F.round(F.col('salary') - F.col('salary')*0.24, 0))
-                            .when(F.max('salary').over(w_spec) > 10000,
-                                  F.round(F.col('salary') - F.col('salary')*0.49, 0)))
+    .withColumn('max_salary', F.max('salary').over(w_spec)) \
+    .withColumn('salary', F.when(F.col('max_salary') > 10000, F.round(F.col('salary') - F.col('salary')*0.49,0))
+                .when(F.col('max_salary') >= 1000, F.round(F.col('salary') - F.col('salary')*0.24, 0))
+                .otherwise(F.col('salary'))) \
+                .select('company_id', 'employee_id', 'employee_name', 'salary')
 
 result_df.show()
 ```
@@ -1496,9 +1516,11 @@ result_df = u_df \
             .groupby('user_id', 'credit', 'user_name') \
             .agg((F.sum(F.when(F.col('user_id') == F.col('paid_by'),
                               -F.col('amount')).otherwise(F.col('amount'))) + F.col('credit')).alias('balance')) \
-            .withColumn('credit', F.when(F.col('balance').isNull(), F.col('credit')).otherwise(F.col('balance'))) \
+            .withColumn('credit', F.ifnull(F.col('balance'), F.col('credit'))) \
             .withColumn('credit_limit_breached', F.when(F.col('credit') < 0, 'Yes').otherwise('No')) \
             .select('user_id', 'user_name', 'credit', 'credit_limit_breached')
+
+result_df.show()
 ```
 
 ### [1596. The Most Frequently Ordered Products for Each Customer](https://www.jiakaobo.com/leetcode/1596.%20The%20Most%20Frequently%20Ordered%20Products%20for%20Each%20Customer.html) 
@@ -2133,6 +2155,28 @@ result_df.show()
 ```
 
 ### [2142. The Number of Passengers in Each Bus I](https://www.jiakaobo.com/leetcode/2142.%20The%20Number%20of%20Passengers%20in%20Each%20Bus%20I.html) 
+
+```python
+from pyspark.sql import functions as F, Window as W
+
+b_df = spark.read_table_as_df("buses_2142")
+b_df.show()
+
+p_df = spark.read_table_as_df("passengers_2142")
+p_df.show()
+
+w_spec = W.partitionBy('passenger_id').orderBy('b.arrival_time')
+
+result_df = p_df.alias('p') \
+            .join(b_df.alias('b'), on=F.col('p.arrival_time') <= F.col('b.arrival_time')) \
+            .withColumn('rnk', F.rank().over(w_spec)) \
+            .filter(F.col('rnk') == 1) \
+            .join(b_df, on='bus_id', how='right') \
+            .groupby('bus_id').agg(F.count('passenger_id').alias('passengers_cnt')) \
+            .orderBy('bus_id')
+
+result_df.show()
+```
 
 ```python
 from pyspark.sql import functions as F
