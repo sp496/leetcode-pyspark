@@ -3,7 +3,7 @@ from dependencies import spark_pg_utils
 
 def solution_1(spark):
 
-    from pyspark.sql import functions as F
+    from pyspark.sql import functions as F, Window as W
 
     df = spark.read_table_as_df("scores_178")
     df.show()

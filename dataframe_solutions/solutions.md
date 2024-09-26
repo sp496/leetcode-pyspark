@@ -2316,53 +2316,179 @@ result_df.show()
 ### [2292. Products With Three or More Orders in Two Consecutive Years](https://www.jiakaobo.com/leetcode/2292.%20Products%20With%20Three%20or%20More%20Orders%20in%20Two%20Consecutive%20Years.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+o_df = spark.read_table_as_df("orders_2292")
+o_df.show()
+
+agg_df = o_df \
+            .groupby('product_id', F.date_format(F.col('purchase_date'), 'yyyy').alias('year')) \
+            .agg(F.count('*').alias('count'))
+
+result_df = agg_df.alias('a1') \
+            .join(agg_df.alias('a2'), on=(F.col('a1.product_id') == F.col('a2.product_id'))
+                                            &(F.col('a2.year') == F.col('a1.year') + 1)) \
+            .select('a1.product_id')
+
+result_df.show()
 ```
 
 ### [2298. Tasks Count in the Weekend](https://www.jiakaobo.com/leetcode/2298.%20Tasks%20Count%20in%20the%20Weekend.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+t_df = spark.read_table_as_df("tasks_2298")
+t_df.show()
+
+result_df = t_df \
+            .withColumn('day_of_week', F.dayofweek('submit_date')) \
+            .select(F.count(F.when(F.col('day_of_week').isin([7, 1]), True)).alias('weekend_count'),
+                    F.count(F.when(~F.col('day_of_week').isin([7, 1]), True)).alias('working_cnt'))
+
+result_df.show()
 ```
 
 ### [2308. Arrange Table by Gender](https://www.jiakaobo.com/leetcode/2308.%20Arrange%20Table%20by%20Gender.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+g_df = spark.read_table_as_df("genders_2308")
+g_df.show()
+
+w_spec = W.partitionBy('gender').orderBy('user_id')
+
+result_df = g_df \
+            .withColumn('rnk1', F.row_number().over(w_spec)) \
+            .withColumn('rnk2', F.when(F.col('gender') == 'female', 1)
+                                .when(F.col('gender') == 'other', 2).otherwise(3)) \
+            .orderBy('rnk1', 'rnk2') \
+            .select('user_id', 'gender')
+
+result_df.show()
 ```
 
 ### [2314. The First Day of the Maximum Recorded Degree in Each City](https://www.jiakaobo.com/leetcode/2314.%20The%20First%20Day%20of%20the%20Maximum%20Recorded%20Degree%20in%20Each%20City.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+w_df = spark.read_table_as_df("weather_2314")
+w_df.show()
+
+w_spec = W.partitionBy('city_id').orderBy(F.desc('degree'))
+
+result_df = w_df \
+            .withColumn('rnk', F.row_number().over(w_spec)) \
+            .filter(F.col('rnk') == 1) \
+            .select('city_id', 'day', 'degree') \
+            .orderBy('city_id')
+
+result_df.show()
 ```
 
 ### [2324. Product Sales Analysis IV](https://www.jiakaobo.com/leetcode/2324.%20Product%20Sales%20Analysis%20IV.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+p_df = spark.read_table_as_df("product_2324")
+p_df.show()
+
+s_df = spark.read_table_as_df("sales_2324")
+s_df.show()
+
+w_spec = W.partitionBy('user_id').orderBy(F.desc('spent'))
+
+result_df = s_df \
+            .join(p_df, on='product_id') \
+            .withColumn('spent', F.col('quantity') * F.col('price')) \
+            .groupby('user_id', 'product_id').agg(F.sum('spent').alias('spent')) \
+            .withColumn('rnk', F.rank().over(w_spec)) \
+            .filter(F.col('rnk') == 1) \
+            .select('user_id', 'product_id')
+
+result_df.show()
 ```
 
 ### [2346. Compute the Rank as a Percentage](https://www.jiakaobo.com/leetcode/2346.%20Compute%20the%20Rank%20as%20a%20Percentage.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+s_df = spark.read_table_as_df("students_2346")
+s_df.show()
+
+w_spec1 = W.partitionBy('department_id').orderBy(F.desc('mark'))
+w_spec2 = W.partitionBy('department_id')
+
+result_df = s_df \
+            .withColumn('rnk', F.dense_rank().over(w_spec1)) \
+            .withColumn('student_count', F.count('*').over(w_spec2)) \
+            .withColumn('percentage', ((F.col('rnk') - 1) * 100)/(F.col('student_count') - 1)) \
+            .select('student_id', 'department_id', 'percentage')
+
+result_df.show()
 ```
 
 ### [2372. Calculate the Influence of Each Salesperson](https://www.jiakaobo.com/leetcode/2372.%20Calculate%20the%20Influence%20of%20Each%20Salesperson.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+sp_df = spark.read_table_as_df("salesperson_2372")
+sp_df.show()
+
+c_df = spark.read_table_as_df("customer_2372")
+c_df.show()
+
+s_df = spark.read_table_as_df("sales_2372")
+s_df.show()
+
+result_df = sp_df \
+            .join(c_df, on='salesperson_id', how='left') \
+            .join(s_df, on='customer_id', how='left') \
+            .groupby('salesperson_id', 'name').agg(F.ifnull(F.sum(F.col('price')), F.lit(0)).alias('total'))
+
+result_df.show()
 ```
 
 ### [2388. Change Null Values in a Table to the Previous Value](https://www.jiakaobo.com/leetcode/2388.%20Change%20Null%20Values%20in%20a%20Table%20to%20the%20Previous%20Value.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+c_df = spark.read_table_as_df("coffee_shop_2388")
+c_df.show()
+
+result_df = c_df \
+            .withColumn('row_num', F.row_number().over(W.orderBy(F.lit('A')))) \
+            .withColumn('group_id', F.sum(F.when(F.col('drink').isNotNull(),1)).over(W.orderBy(F.col('row_num')))) \
+            .withColumn('drink', F.first('drink').over(W.partitionBy('group_id'))) \
+            .select('id', 'drink')
+
+result_df.show()
 ```
 
 ### [2394. Employees With Deductions](https://www.jiakaobo.com/leetcode/2394.%20Employees%20With%20Deductions.html) 
 
 ```python
+from pyspark.sql import functions as F, Window as W
 
+e_df = spark.read_table_as_df("employees_2394")
+e_df.show()
+
+l_df = spark.read_table_as_df("logs_2394")
+l_df.show()
+
+result_df = e_df \
+            .join(l_df, on='employee_id', how='left') \
+            .groupby('employee_id', 'needed_hours') \
+            .agg((F.sum(F.ceiling(F.ifnull(F.col('out_time').cast('long')
+                                        - F.col('in_time').cast('long'), F.lit(0))/60))/60).alias('total_hours')) \
+            .filter(F.col('total_hours') < F.col('needed_hours')) \
+            .select('employee_id')
+
+result_df.show()
 ```
