@@ -2492,3 +2492,204 @@ result_df = e_df \
 
 result_df.show()
 ```
+
+
+### [2686. Immediate Food Delivery III](https://leetcode.ca/2023-04-08-2686-Immediate-Food-Delivery-III/) 
+
+```python
+
+```
+
+### [2688. Find Active Users](https://leetcode.ca/2023-04-10-2688-Find-Active-Users/) 
+
+```python
+
+```
+
+### [2738. Count Occurrences in Text](https://leetcode.ca/2023-05-30-2738-Count-Occurrences-in-Text/) 
+
+```python
+
+```
+
+### [2783. Flight Occupancy and Waitlist An](https://leetcode.ca/2023-07-14-2783-Flight-Occupancy-and-Waitlist-Analysis/) 
+
+```python
+
+```
+
+### [2820. Election Results](https://leetcode.ca/2023-08-20-2820-Election-Results/) 
+
+```python
+
+```
+
+### [2854. Rolling Average Steps](https://leetcode.ca/2023-09-23-2854-Rolling-Average-Steps/) 
+
+```python
+
+```
+
+### [2893. Calculate Orders Within Each Interval](https://leetcode.ca/2023-11-01-2893-Calculate-Orders-Within-Each-Interval/) 
+
+```python
+
+```
+
+### [2922. Market Analysis III](https://leetcode.ca/2023-11-30-2922-Market-Analysis-III/) 
+
+```python
+
+```
+
+### [2978. Symmetric Coordinates](https://leetcode.ca/2024-01-09-2978-Symmetric-Coordinates/) 
+
+```python
+
+```
+
+### [2984. Find Peak Calling Hours for Each City](https://leetcode.ca/2024-01-15-2984-Find-Peak-Calling-Hours-for-Each-City/) 
+
+```python
+
+```
+
+### [2986. Find Third Transaction](https://leetcode.ca/2024-01-01-2986-Find-Third-Transaction/) 
+
+```python
+
+```
+
+### [2988. Manager of the Largest Departme](https://leetcode.ca/2024-01-03-2988-Manager-of-the-Largest-Department/) 
+
+```python
+
+```
+
+### [2989. Class Performance](https://leetcode.ca/2024-01-04-2989-Class-Performance/) 
+
+```python
+
+```
+
+### [2993. Friday Purchases I](https://leetcode.ca/2024-01-08-2993-Friday-Purchases-I/) 
+
+```python
+
+```
+
+### [3050. Pizza Toppings Cost Analysis](https://leetcode.ca/2024-03-01-3050-Pizza-Toppings-Cost-Analysis/) 
+
+```python
+
+```
+
+### [3054. Binary Tree Nodes](https://leetcode.ca/2024-03-05-3054-Binary-Tree-Nodes/) 
+
+```python
+
+```
+
+### [3055. Top Percentile Fraud](https://leetcode.ca/2024-03-06-3055-Top-Percentile-Fraud/) 
+
+```python
+
+```
+
+### [3056. Snaps Analysis](https://leetcode.ca/2024-03-07-3056-Snaps-Analysis/) 
+
+```python
+
+```
+
+### [3058. Friends With No Mutual Friends](https://leetcode.ca/2024-03-09-3058-Friends-With-No-Mutual-Friends/) 
+
+```python
+
+```
+
+### [3087. Find Trending Hashtags](https://leetcode.ca/2024-04-07-3087-Find-Trending-Hashtags/) 
+
+```python
+
+```
+
+### [3089. Find Bursty Behavior](https://leetcode.ca/2024-04-09-3089-Find-Bursty-Behavior/) 
+
+```python
+
+```
+
+### [3118. Friday Purchase III](https://leetcode.ca/2024-05-08-3118-Friday-Purchase-III/) 
+
+```python
+
+```
+
+### [3124. Find Longest Calls](https://leetcode.ca/2024-05-14-3124-Find-Longest-Calls/) 
+
+```python
+
+```
+
+### [3126. Server Utilization Time](https://leetcode.ca/2024-05-16-3126-Server-Utilization-Time/) 
+
+```python
+
+```
+
+### [3140. Consecutive Available Seats II](https://leetcode.ca/2024-05-24-3140-Consecutive-Available-Seats-II/) 
+
+```python
+
+```
+
+### [3166. Calculate Parking Fees and Dura](https://leetcode.ca/2024-06-10-3166-Calculate-Parking-Fees-and-Duration/) 
+
+```python
+
+```
+
+### [3182. Find Top Scoring Students](https://leetcode.ca/2024-06-21-3182-Find-Top-Scoring-Students/) 
+
+```python
+
+```
+
+### [3204. Bitwise User Permissions Analysis](https://leetcode.ca/2024-07-13-3204-Bitwise-User-Permissions-Analysis/) 
+
+```python
+
+```
+
+### [3220. Odd and Even Transactions](https://leetcode.ca/2024-07-29-3220-Odd-and-Even-Transactions/) 
+
+```python
+
+```
+
+### [3230. Customer Purchasing Behavior Analysis](https://leetcode.ca/2024-08-08-3230-Customer-Purchasing-Behavior-Analysis/) 
+
+```python
+
+```
+
+### [3252. Premier League Table Ranking II](https://leetcode.ca/2024-08-30-3252-Premier-League-Table-Ranking-II/) 
+
+```python
+
+```
+
+### [3262. Find Overlapping Shifts](https://leetcode.ca/2024-09-09-3262-Find-Overlapping-Shifts/) 
+
+```python
+
+```
+
+### [3278. Find Candidates for Data Scientist Position II](https://leetcode.ca/2024-09-25-3278-Find-Candidates-for-Data-Scientist-Position-II/) 
+
+```python
+
+```
+
+
