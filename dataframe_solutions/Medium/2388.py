@@ -11,7 +11,7 @@ def solution_1(spark):
     result_df = c_df \
                 .withColumn('row_num', F.row_number().over(W.orderBy(F.lit('A')))) \
                 .withColumn('group_id', F.sum(F.when(F.col('drink').isNotNull(),1)).over(W.orderBy(F.col('row_num')))) \
-                .withColumn('drink', F.first('drink').over(W.partitionBy('group_id'))) \
+                .withColumn('drink', F.first('drink').over(W.partitionBy('group_id').orderBy(F.col('row_num')))) \
                 .select('id', 'drink')
 
     result_df.show()

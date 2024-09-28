@@ -155,7 +155,7 @@ If you want to reset your database, just delete the `postgres_data` folder
 Install `psql`
 In powershell
 ```bash
-wsl -install
+wsl --install
 ```
 
 ```bash
@@ -208,6 +208,15 @@ Run python solution files
 ```bash
 python dataframe_solutions/181.py 
 ```
+
+psql -h localhost -p 5432 -U postgres -d leetcodedb
+pg_dump -U postgres -d leetcodedb -F c -f /mnt/c/Users/DELL/PycharmProjects/leetcode-pyspark/postgresql_dump_file/test.dump
+
+pg_dump -U postgres -d leetcodedb -F c -f test.dump
+
+pg_dump -h localhost -p 5432 -U postgres -d leetcodedb -F c -f /mnt/c/Users/DELL/PycharmProjects/leetcode-pyspark/postgresql_dump_file/test.dump
+
+pg_dump -h localhost -p 5432 -U postgres -d leetcodedb -F c -f test.dump
 
 
 
