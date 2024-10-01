@@ -216,9 +216,7 @@ pg_dump -U postgres -d leetcodedb -F c -f test.dump
 
 pg_dump -h localhost -p 5432 -U postgres -d leetcodedb -F c -f /mnt/c/Users/DELL/PycharmProjects/leetcode-pyspark/postgresql_dump_file/test.dump
 
-pg_dump -h localhost -p 5432 -U postgres -d leetcodedb -F c -f test.dump
 
-
-
-
-
+\o /mnt/c/Users/DELL/PycharmProjects/leetcode-pyspark/dataframe_solutions/tables1.txt
+\dt
+\o
