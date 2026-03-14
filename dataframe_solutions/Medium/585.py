@@ -1,7 +1,25 @@
 from dependencies import spark_pg_utils
 
 
+
 def solution_1(spark):
+    import pyspark.sql.functions as F
+
+    inv_df = spark.read_table_as_df("insurance_585")
+    inv_df.show()
+
+    result_df = inv_df.alias('i1') \
+        .join(inv_df.alias('i2'), on=(F.col('i1.pid') != F.col('i2.pid')) &
+                                     (F.col('i1.tiv_2015') == F.col('i2.tiv_2015')), how='left_semi') \
+        .join(inv_df.alias('i3'), on=(F.col('i1.pid') != F.col('i3.pid')) &
+                                     (F.col('i1.lat') == F.col('i3.lat')) &
+                                     (F.col('i1.lon') == F.col('i3.lon')), how='left_anti') \
+        .select(F.sum(F.col('tiv_2016')).alias('tiv_2016'))
+
+    result_df.show()
+
+
+def solution_4(spark):
 
     import pyspark.sql.functions as F
 
@@ -46,5 +64,7 @@ def solution_3(spark):
 
     result_df.show()
 
+
+
 if __name__ == '__main__':
-    spark_pg_utils.execute(solution_3)
+    spark_pg_utils.execute(solution_1)
